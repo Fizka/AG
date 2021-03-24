@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
+import {PopulationService} from './population.service';
+import {Subject} from './subject.model';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +9,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'AlgoGene';
+
+  population: Subject[] = [];
+
+  constructor(protected populationService: PopulationService) {
+  }
 }
