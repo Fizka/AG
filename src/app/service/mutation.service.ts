@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Subject} from './subject.model';
+import {Subject} from '../model/subject.model';
 
 export enum MutationTypes {
   ONE_POINT_MUTATION = 'one-point',

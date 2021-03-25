@@ -1,0 +1,28 @@
+.form-control{
+  color: whitesmoke !important;
+
+}
+
+.form-group{
+  margin-top: 60px;
+}
+
+.selection-input{
+  width: 95%;
+  margin: 20px 2px 0px 2px;
+  padding: 4px;
+  height: 32px;
+}
+
+.text-muted {
+  color:whitesmoke !important;
+}
+
+.button-invisible{
+  height: 44px;
+  font-size: 28px;
+  color: whitesmoke;
+  font-weight: bold;
+  background: transparent;
+  border: none;
+}

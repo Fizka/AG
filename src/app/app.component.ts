@@ -1,8 +1,8 @@
 import {Component} from '@angular/core';
-import {CrossingService} from './crossing.service';
-import {InversionService} from './inversion.service';
-import {PopulationService} from './population.service';
-import {Subject} from './subject.model';
+import {CrossingService} from './service/crossing.service';
+import {InversionService} from './service/inversion.service';
+import {PopulationService} from './service/population.service';
+import {Subject} from './model/subject.model';
 
 @Component({
   selector: 'app-root',

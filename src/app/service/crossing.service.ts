@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Subject} from './subject.model';
+import {Subject} from '../model/subject.model';
 
 export enum CrossoverTypes {
   ONE_POINT_CROSSOVER = 'one-point',
