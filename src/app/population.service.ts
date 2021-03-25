@@ -6,16 +6,20 @@ import {Subject} from './subject.model';
 })
 export class PopulationService {
 
-  getFitnessValue(x: number, y: number): number {
-    return Math.pow((x + 2 * y - 7), 2) + Math.pow((2 * x + y - 5), 2);
-  }
+  private bottom: number;
+  private upper: number;
 
-  initPopulation(populationSize: number, chromosomeLength: number): Subject[] {
+  initPopulation(populationSize: number, chromosomeLength: number, bottom: number, upper: number): Subject[] {
+    this.bottom = bottom;
+    this.upper = upper;
+
     const tab = new Array<Subject>();
     const subject = new Subject();
     for (let i = 0; i < populationSize; i++) {
-      subject.x = this.generateChromosome(chromosomeLength);
-      subject.y = this.generateChromosome(chromosomeLength);
+      const x = this.generateChromosome(chromosomeLength);
+      const y = this.generateChromosome(chromosomeLength);
+      subject.setX(x, this.decodeChromosome(x));
+      subject.setY(y, this.decodeChromosome(y));
       tab.push(subject);
     }
     return tab;
@@ -29,8 +33,8 @@ export class PopulationService {
     return bits;
   }
 
-  decodeChromosome(chromosome: string, bottom: number, upper: number): number {
-    return bottom + this.binaryToDecimal(chromosome) * (bottom - upper)
+  decodeChromosome(chromosome: string): number {
+    return this.bottom + this.binaryToDecimal(chromosome) * (this.bottom - this.upper)
       / (Math.pow(2, (chromosome.length + 1)) - 1);
   }
 
