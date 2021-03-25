@@ -18,6 +18,8 @@ export class AppComponent {
               protected crossingService: CrossingService) {
   }
 
+  // na początku algorytmu obliczamy _x i _y dla każdego osobnika, później nie zwracamy na nie uwagi
+
   getFittiest(): Subject {
     return this.population.reduce((prev, current) => {
       return ((prev.fitnessValue > current.fitnessValue) && this.maximization) ? prev : current;
