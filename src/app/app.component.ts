@@ -1,4 +1,5 @@
 import {Component} from '@angular/core';
+import {CrossingService} from './crossing.service';
 import {PopulationService} from './population.service';
 import {Subject} from './subject.model';
 
@@ -13,7 +14,8 @@ export class AppComponent {
   population: Subject[] = [];
   maximization = false;
 
-  constructor(protected populationService: PopulationService) {
+  constructor(protected populationService: PopulationService,
+              protected crossingService: CrossingService) {
   }
 
   getFittiest(): Subject {

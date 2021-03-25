@@ -1,6 +1,6 @@
-import {Subject} from './subject.model';
 import {Injectable} from '@angular/core';
 import {PopulationService} from './population.service';
+import {Subject} from './subject.model';
 
 export enum CrossoverTypes {
   ONE_POINT_CROSSOVER = 'one-point',
@@ -9,70 +9,118 @@ export enum CrossoverTypes {
   HOMOGENEOUS_CROSSOVER = 'homogeneous'
 }
 
+export interface Parents {
+  parent1: string;
+  parent2: string;
+}
+
+export interface Children {
+  child1: Subject;
+  child2: Subject;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class CrossingService {
 
+  constructor(protected populationService: PopulationService){}
+
   private index1: number;
   private index2: number;
+  private index3: number;
 
-  constructor(protected populationService: PopulationService){}
+  private static checkProbability(probability: number): boolean {
+    return (Math.random() * 100) <= probability;
+  }
 
   prepareIndexes(parentSize: number): void{
     this.index1 = Math.floor(Math.random() * (parentSize - 1));
     this.index2 = this.index1 + Math.floor(Math.random() * (parentSize - this.index1));
+    this.index3 = this.index2 + Math.floor(Math.random() * (parentSize - this.index2));
   }
 
-  performCrossover(parent1: Subject, parent2: Subject, probability: number, selectedCross: CrossoverTypes): Subject {
-    const children = new Subject();
-    let x: string;
-    let y: string;
+  performCrossover(parent1: Subject, parent2: Subject, probability: number, selectedCross: CrossoverTypes): Children {
+    let x: Parents;
+    let y: Parents;
 
-    switch (selectedCross) {
-      case CrossoverTypes.ONE_POINT_CROSSOVER: {
-        this.prepareIndexes(parent1.x.length);
-        x = this.onePointCrossing(parent1.x, parent2.x, probability);
-        y = this.onePointCrossing(parent1.y, parent2.y, probability);
-        break;
+    // losuję liczbę z przedziału <0, 1> - jeśli <= probability to krzyżujemy, jak nie to zwracamy bez zmian
+    if (CrossingService.checkProbability(probability)) {
+
+      switch (selectedCross) {
+        case CrossoverTypes.ONE_POINT_CROSSOVER: {
+          this.prepareIndexes(parent1.x.length);
+          x = this.onePointCrossing(parent1.x, parent2.x);
+          y = this.onePointCrossing(parent1.y, parent2.y);
+          break;
+        }
+        case CrossoverTypes.TWO_POINTS_CROSSOVER: {
+          this.prepareIndexes(parent1.x.length);
+          x = this.twoPointsCrossing(parent1.x, parent2.x);
+          y = this.twoPointsCrossing(parent1.y, parent2.y);
+          break;
+        }
+        case CrossoverTypes.THREE_POINTS_CROSSOVER: {
+          this.prepareIndexes(parent1.x.length);
+          x = this.threePointsCrossing(parent1.x, parent2.x);
+          y = this.threePointsCrossing(parent1.y, parent2.y);
+          break;
+        }
+        case CrossoverTypes.HOMOGENEOUS_CROSSOVER: {
+          x = this.homogeneousCrossing(parent1.x, parent2.x);
+          y = this.homogeneousCrossing(parent1.y, parent2.y);
+          break;
+        }
       }
-      case CrossoverTypes.TWO_POINTS_CROSSOVER: {
-        this.prepareIndexes(parent1.x.length);
-        x = this.twoPointsCrossing(parent1.x, parent2.x, probability);
-        y = this.twoPointsCrossing(parent1.y, parent2.y, probability);
-        break;
-      }
-      case CrossoverTypes.THREE_POINTS_CROSSOVER: {
-        this.prepareIndexes(parent1.x.length);
-        x = this.threePointsCrossing(parent1.x, parent2.x, probability);
-        y = this.threePointsCrossing(parent1.y, parent2.y, probability);
-        break;
-      }
-      case CrossoverTypes.HOMOGENEOUS_CROSSOVER: {
-        this.prepareIndexes(parent1.x.length);
-        x = this.homogeneousCrossing(parent1.x, parent2.x, probability);
-        y = this.homogeneousCrossing(parent1.y, parent2.y, probability);
-        break;
+      return this.prepareChildren(x, y);
+    }
+    return { child1: parent1, child2: parent2 };
+  }
+
+  onePointCrossing(chromosome1: string, chromosome2: string): Parents {
+    const piece = chromosome1.slice(this.index1);
+    chromosome1 = chromosome1.slice(0, this.index1) + chromosome2.slice(this.index1);
+    chromosome2 = chromosome2.slice(0, this.index1) + piece;
+    return { parent1: chromosome1, parent2: chromosome2 };
+  }
+
+  twoPointsCrossing(chromosome1: string, chromosome2: string): Parents {
+    const piece = chromosome1.slice(this.index1, this.index2);
+    chromosome1 = chromosome1.slice(0, this.index1) + chromosome2.slice(this.index1, this.index2) + chromosome1.slice(this.index2);
+    chromosome2 = chromosome2.slice(0, this.index1) + piece + chromosome2.slice(this.index2);
+    return { parent1: chromosome1, parent2: chromosome2 };
+  }
+
+  threePointsCrossing(chromosome1: string, chromosome2: string): Parents {
+    const piece1 = chromosome1.slice(this.index1, this.index2);
+    const piece2 = chromosome1.slice(this.index3);
+    chromosome1 = chromosome1.slice(0, this.index1) + chromosome2.slice(this.index1, this.index2)
+                + chromosome1.slice(this.index2, this.index3) + chromosome2.slice(this.index3);
+    chromosome2 = chromosome2.slice(0, this.index1) + piece1 + chromosome2.slice(this.index2, this.index3) + piece2;
+    return { parent1: chromosome1, parent2: chromosome2 };
+  }
+
+  homogeneousCrossing(chromosome1: string, chromosome2: string): Parents {
+    // bit po bicie, losuję liczbę z przedziału <0, 1> - jeśli >= 0.5 to zamieniam geny u rodziców
+    for (let i = 0; i < chromosome1.length; i++) {
+      if (Math.random() >= 0.5) {
+        const bit = chromosome1[i];
+        chromosome1 = chromosome1.slice(0, i) + chromosome2[i] + chromosome1.slice(i + 1);
+        chromosome2 = chromosome2.slice(0, i) + bit + chromosome2.slice(i + 1);
       }
     }
-    children.setX(x, this.populationService.decodeChromosome(x));
-    children.setY(y, this.populationService.decodeChromosome(y));
-    return children;
+    return { parent1: chromosome1, parent2: chromosome2 };
   }
 
-  onePointCrossing(chromosome1: string, chromosome2: string, probability: number): string {
-    return chromosome1;
-  }
+  private prepareChildren(x: Parents, y: Parents): Children {
+    const child1 = new Subject();
+    const child2 = new Subject();
 
-  twoPointsCrossing(chromosome1: string, chromosome2: string, probability: number): string {
-    return chromosome1;
-  }
+    child1.setX(x.parent1, this.populationService.decodeChromosome(x.parent1));
+    child1.setY(y.parent1, this.populationService.decodeChromosome(y.parent1));
+    child2.setX(x.parent2, this.populationService.decodeChromosome(x.parent2));
+    child2.setY(y.parent2, this.populationService.decodeChromosome(y.parent2));
 
-  threePointsCrossing(chromosome1: string, chromosome2: string, probability: number): string {
-    return chromosome1;
-  }
-
-  homogeneousCrossing(chromosome1: string, chromosome2: string, probability: number): string {
-    return chromosome1;
+    return { child1, child2 };
   }
 }
