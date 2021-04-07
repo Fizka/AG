@@ -1,15 +1,16 @@
 .form-control{
   color: whitesmoke !important;
-
 }
 
-.form-group{
-  margin-top: 60px;
+input {
+  text-align: center;
+  font-weight: 600;
 }
 
 .selection-input{
-  width: 95%;
-  margin: 20px 2px 0px 2px;
+  text-align-last: center;
+  width: 100%;
+  margin: 20px 2px 0 2px;
   padding: 4px;
   height: 32px;
 }

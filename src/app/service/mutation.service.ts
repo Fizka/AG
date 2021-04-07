@@ -4,7 +4,7 @@ import {Subject} from '../model/subject.model';
 export enum MutationTypes {
   ONE_POINT_MUTATION = 'one-point',
   TWO_POINTS_MUTATION = 'two-points',
-  BOUNDARY_MUTATION = 'homogeneous'
+  BOUNDARY_MUTATION = 'bonduary'
 }
 
 @Injectable({
