@@ -11,7 +11,7 @@ export class PopulationService {
 
   private static generateChromosome(chromosomeLength: number): string {
     let bits = '';
-    for (let i = 0; i < chromosomeLength - 1; i++) {
+    for (let i = 0; i < chromosomeLength; i++) {
       bits += Math.round(Math.random());
     }
     return bits;
@@ -29,9 +29,7 @@ export class PopulationService {
       subject.setX(x, this.decodeChromosome(x));
       subject.setY(y, this.decodeChromosome(y));
       population.push(subject);
-      console.log(subject);
     }
-    console.log(population);
     return population;
   }
 
@@ -42,8 +40,8 @@ export class PopulationService {
   }
 
   private decodeChromosome(chromosome: string): number {
-    return this.bottom + this.binaryToDecimal(chromosome) * (this.bottom - this.upper)
-      / (Math.pow(2, (chromosome.length + 1)) - 1);
+    return this.bottom + this.binaryToDecimal(chromosome) * (this.upper - this.bottom)
+      / (Math.pow(2, chromosome.length) - 1);
   }
 
   private binaryToDecimal(binary: string): number {

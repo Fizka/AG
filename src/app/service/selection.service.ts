@@ -47,23 +47,16 @@ export class SelectionService {
   public selectionBest(population: Subject[], percent: number, findMin: boolean): Subject[] {
     let sub = population;
     sub = findMin ? sub.sort((a, b) => a.fitnessValue - b.fitnessValue) : sub.sort((a, b) => b.fitnessValue - a.fitnessValue);
-    const result2: Subject[] = [];
-    // console.log(SelectionService.getProcent(sub.length, percent));
-    for (let i = 0; i < SelectionService.getProcent(sub.length, percent); i++) {
-      result2.push(sub.shift());
-    }
-    // console.log(result2);
-    return result2;
+    sub.splice(SelectionService.getProcent(sub.length, percent));
+    return sub;
   }
 
   public selectionRoulette(population: Subject[], howMuch): Subject[] {
     let sub = population;
     const poolIndex = this.getPoolIndex(0, sub.length - 1, howMuch);
-    // console.log(poolIndex);
     sub = sub.filter(p => {
       return poolIndex.findIndex(val => val === sub.indexOf(p)) !== -1;
     });
-    // console.log(sub);
     return sub;
   }
 
@@ -91,7 +84,6 @@ export class SelectionService {
     if (population.length % numberOfSections !== 0) {
       result.push(this.findBest(this.findSet(population, population.length - (population.length % numberOfSections), population.length), true));
     }
-    // console.log(result);
     return result;
   }
 

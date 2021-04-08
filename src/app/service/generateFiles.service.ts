@@ -6,6 +6,8 @@ import {Subject} from '../model/subject.model';
 })
 export class GenerateFilesService {
 
+  private bestSubject: Subject;
+
   private bestValues: number[] = [];
   private meanValues: number[] = [];
   private stdValues: number[] = [];
@@ -16,11 +18,12 @@ export class GenerateFilesService {
     }
   };
 
-  saveMinMaxValue(population: Subject[], maximization: boolean): void {
-    const bestSubject = population.reduce((prev, current) => {
+  private saveMinMaxValue(population: Subject[], maximization: boolean): void {
+    const best = population.reduce((prev, current) => {
       return ((prev.fitnessValue > current.fitnessValue) && maximization) ? prev : current;
     });
-    this.bestValues.push(bestSubject.fitnessValue);
+    this.bestSubject = best;
+    this.bestValues.push(best.fitnessValue);
   }
 
   private getMeanValue(population: Subject[]): number {

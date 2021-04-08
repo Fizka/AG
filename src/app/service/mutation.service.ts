@@ -17,7 +17,7 @@ export class MutationService {
   }
 
   private static changeBit(chromosome: string, index: number): string {
-    return chromosome.slice(0, index) + chromosome[index] === '0' ? '1' : '0' + chromosome.slice(index + 1);
+    return chromosome.slice(0, index) + (chromosome[index] === '0' ? '1' : '0') + chromosome.slice(index + 1);
   }
 
   private static onePointMutation(subject: Subject): Subject {

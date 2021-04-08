@@ -43,15 +43,6 @@ export class MainPanelComponent {
               private mutationService: MutationService,
               private inversionService: InversionService,
               private filesService: GenerateFilesService) {
-    // this.population = this.populationService.initPopulation(10, 10, 1, 10;
-    // console.log(this.population);
-    // this.population.forEach(subject => {
-    //   console.log('subject before');
-    //   console.log(subject);
-    //   subject = this.mutationService.performMutation(subject, this.mutationProbability, this.mutationChoice);
-    //   console.log('subject after');
-    //   console.log(subject);
-    // });
   }
 
   algorithm(): void {
@@ -59,7 +50,6 @@ export class MainPanelComponent {
 
     // generacja początkowej populacji i obliczamy wartość funkcji
     this.population = this.populationService.initPopulation(this.populationAmount, this.numberOfBits, this.rangeStart, this.rangeEnd);
-    console.log(this.population);
     let newPopulation: Subject[] = [];
 
     for (let i = 0; i < this.epochsAmount; i++) {
@@ -84,11 +74,7 @@ export class MainPanelComponent {
 
       // mutacja
       newPopulation.forEach(subject => {
-        // console.log('subject before')
-        // console.log(subject)
         subject = this.mutationService.performMutation(subject, this.mutationProbability, this.mutationChoice);
-        // console.log('subject after')
-        // console.log(subject)
       });
 
       // inwersja
@@ -96,13 +82,16 @@ export class MainPanelComponent {
         subject = this.inversionService.performInversion(subject, this.inversionProbability);
       });
 
+      newPopulation.forEach(subject => {
+        subject = this.populationService.decodeSubject(subject);
+      });
       this.population = newPopulation;
-      // this.filesService.saveValues(this.population, this.maximization);
+      this.filesService.saveValues(this.population, this.maximization);
     }
 
     const timeSpent = this.countTime(startTime);
     console.log('Time spent: ' + timeSpent);
-    // this.filesService.prepareFiles();
+    this.filesService.prepareFiles();
   }
 
   onSubmit(): void {
