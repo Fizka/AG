@@ -2,9 +2,9 @@ import {Injectable} from '@angular/core';
 import {Subject} from '../model/subject.model';
 
 export enum MutationTypes {
-  ONE_POINT_MUTATION = 'one-point',
-  TWO_POINTS_MUTATION = 'two-points',
-  BOUNDARY_MUTATION = 'bonduary'
+  ONE_POINT_MUTATION = 'ONE POINT',
+  TWO_POINTS_MUTATION = 'TWO POINTS',
+  BOUNDARY_MUTATION = 'BONDUARY'
 }
 
 @Injectable({

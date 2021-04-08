@@ -2,15 +2,20 @@ import {Injectable} from '@angular/core';
 import {Subject} from '../model/subject.model';
 
 export enum CrossoverTypes {
-  ONE_POINT_CROSSOVER = 'one-point',
-  TWO_POINTS_CROSSOVER = 'two-points',
-  THREE_POINTS_CROSSOVER = 'three-points',
-  HOMOGENEOUS_CROSSOVER = 'homogeneous'
+  ONE_POINT_CROSSOVER = 'ONE POINT',
+  TWO_POINTS_CROSSOVER = 'TWO POINTS',
+  THREE_POINTS_CROSSOVER = 'THREE POINTS',
+  HOMOGENEOUS_CROSSOVER = 'HOMOGENEOUS'
 }
 
 export interface Parents {
   parent1: string;
   parent2: string;
+}
+
+export interface SelectedParents {
+  parent1: Subject;
+  parent2: Subject;
 }
 
 export interface Children {
@@ -77,10 +82,19 @@ export class CrossingService {
     return { parent1: chromosome1, parent2: chromosome2 };
   }
 
-  prepareIndexes(parentSize: number): void{
+  private prepareIndexes(parentSize: number): void{
     this.index1 = Math.floor(Math.random() * (parentSize - 1));
     this.index2 = this.index1 + Math.floor(Math.random() * (parentSize - this.index1));
     this.index3 = this.index2 + Math.floor(Math.random() * (parentSize - this.index2));
+  }
+
+  prepareParents(population: Subject[]): SelectedParents {
+    const parent1 = Math.floor(Math.random() * (population.length - 1));
+    let parent2 = Math.floor(Math.random() * (population.length - 1));
+    while (parent1 === parent2) {
+      parent2 = Math.floor(Math.random() * (population.length - 1));
+    }
+    return {parent1: population[parent1], parent2: population[parent2]};
   }
 
   performCrossover(parent1: Subject, parent2: Subject, probability: number, selectedCross: CrossoverTypes): Children {

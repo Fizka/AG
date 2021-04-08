@@ -6,7 +6,7 @@ import {Subject} from '../model/subject.model';
 })
 export class GenerateFilesService {
 
-  private minimalValues: number[] = [];
+  private bestValues: number[] = [];
   private meanValues: number[] = [];
   private stdValues: number[] = [];
 
@@ -16,15 +16,14 @@ export class GenerateFilesService {
     }
   };
 
-  saveValue(minValue: number): void {
-    this.minimalValues.push(minValue);
+  saveMinMaxValue(population: Subject[], maximization: boolean): void {
+    const bestSubject = population.reduce((prev, current) => {
+      return ((prev.fitnessValue > current.fitnessValue) && maximization) ? prev : current;
+    });
+    this.bestValues.push(bestSubject.fitnessValue);
   }
 
-  saveMeanValue(population: Subject[]): void {
-    this.meanValues.push(this.getMeanValue(population));
-  }
-
-  getMeanValue(population: Subject[]): number {
+  private getMeanValue(population: Subject[]): number {
     let mean = 0;
     population.forEach(subject => {
       mean += subject.fitnessValue;
@@ -32,7 +31,11 @@ export class GenerateFilesService {
     return mean;
   }
 
-  saveStdValue(population: Subject[]): void {
+  private saveMeanValue(population: Subject[]): void {
+    this.meanValues.push(this.getMeanValue(population));
+  }
+
+  private saveStdValue(population: Subject[]): void {
     let value = 0;
     const mean = this.getMeanValue(population);
     population.forEach(subject => {
@@ -42,18 +45,24 @@ export class GenerateFilesService {
     this.stdValues.push(value);
   }
 
+  saveValues(population: Subject[], maximization: boolean): void {
+    this.saveMinMaxValue(population, maximization);
+    this.saveMeanValue(population);
+    this.saveStdValue(population);
+  }
+
   prepareFiles(): void {
     this.dynamicDownload({
-      fileName: 'My Report1',
-      text: 'blab1'
+      fileName: 'Best values',
+      text: this.bestValues.map(x => x.toString()).join('\n')
     });
     this.dynamicDownload({
-      fileName: 'My Report2',
-      text: 'blab2'
+      fileName: 'Mean values',
+      text: this.meanValues.toString()
     });
     this.dynamicDownload({
-      fileName: 'My Report3',
-      text: 'blab3'
+      fileName: 'Std values',
+      text: this.stdValues.toString()
     });
   }
 
