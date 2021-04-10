@@ -28,6 +28,7 @@ export class MainPanelComponent implements OnInit {
 
   lineChartOptions = {
     responsive: true,
+    fill: false
   };
   lineChartColors: Color[] = [
     {
@@ -40,12 +41,13 @@ export class MainPanelComponent implements OnInit {
   lineChartPlugins = [];
   lineChartType = 'line';
 
+  //default
   rangeStart = 1;
   rangeEnd = 10;
   populationAmount = 20;
   numberOfBits = 10;
-  epochsAmount = 1000;
-  bestAndTournamentChro = 70;
+  epochsAmount = 100;
+  bestAndTournamentChro = 50;
   ESamount = 10;
   crossProbability = 80;
   mutationProbability = 40;
@@ -54,6 +56,7 @@ export class MainPanelComponent implements OnInit {
   crossChoice = CrossoverTypes.HOMOGENEOUS_CROSSOVER;
   mutationChoice = MutationTypes.BOUNDARY_MUTATION;
   maximization = false;
+
   lineChartLabels: Label[] = [];
 
   crossTypes = CrossoverTypes;
@@ -84,14 +87,14 @@ export class MainPanelComponent implements OnInit {
   }
 
   algorithm(): void {
+    this.lineChartLabels = this.chartService.labels(this.epochsAmount);
 
     console.log('START');
     const startTime = Date.now();
     // generacja początkowej populacji i obliczamy wartość funkcji
     this.population = this.populationService.initPopulation(this.populationAmount, this.numberOfBits, this.rangeStart, this.rangeEnd);
     let newPopulation: Subject[] = [];
-    this.lineChartLabels = this.chartService.labels(this.epochsAmount);
-    console.log(this.lineChartLabels);
+
     for (let i = 0; i < this.epochsAmount; i++) {
       // ewaluacja
       console.log('INIT');

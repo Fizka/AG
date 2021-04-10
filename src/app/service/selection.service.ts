@@ -53,11 +53,12 @@ export class SelectionService {
 
   public selectionRoulette(population: Subject[], howMuch): Subject[] {
     let sub = population;
-    const poolIndex = this.getPoolIndex(0, sub.length - 1, SelectionService.getProcent(sub.length, howMuch));
-    let subb = sub.filter(p => {
-      return poolIndex.findIndex(val => val == sub.indexOf(p)) != -1;
-    });
-    return subb;
+    const poolIndex = this.getPoolIndex(0, population.length - 1, SelectionService.getProcent(population.length, howMuch));
+    let gg = [];
+    for(let f =0; f<poolIndex.length; f++){
+      gg.push(sub[poolIndex[f]])
+    }
+    return gg;
   }
 
   private getPoolIndex(indexMin, indexMax, howMuch): number[] {
