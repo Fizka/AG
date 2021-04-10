@@ -6,7 +6,11 @@ import {Subject} from '../model/subject.model';
 })
 export class GenerateFilesService {
 
-  private bestSubject: Subject;
+  get bestSubject(): Subject {
+    return this.best;
+  }
+
+  private best: Subject;
 
   public bestValues: number[] = [];
   public meanValues: number[] = [];
@@ -18,20 +22,20 @@ export class GenerateFilesService {
     }
   };
 
-  private saveMinMaxValue(population: Subject[], maximization: boolean): void {
-    population = this.sortPopulation(population, maximization);
-    const best = population[0];
-    if (!this.bestSubject || this.bestSubject.fitnessValue < best.fitnessValue && maximization
-      || this.bestSubject.fitnessValue > best.fitnessValue && ! maximization) {
-      this.bestSubject = best;
-    }
-    this.bestValues.push(best.fitnessValue);
-  }
-
-  sortPopulation(population: Subject[], maximization: boolean): Subject[] {
+  private static sortPopulation(population: Subject[], maximization: boolean): Subject[] {
     population = maximization ? population.sort((a, b) => b.fitnessValue - a.fitnessValue)
       : population.sort((a, b) => a.fitnessValue - b.fitnessValue);
     return population;
+  }
+
+  private saveMinMaxValue(population: Subject[], maximization: boolean): void {
+    population = GenerateFilesService.sortPopulation(population, maximization);
+    const best = population[0];
+    if (!this.bestSubject || this.bestSubject.fitnessValue < best.fitnessValue && maximization
+      || this.bestSubject.fitnessValue > best.fitnessValue && ! maximization) {
+      this.best = best;
+    }
+    this.bestValues.push(best.fitnessValue);
   }
 
   private getMeanValue(population: Subject[]): number {
