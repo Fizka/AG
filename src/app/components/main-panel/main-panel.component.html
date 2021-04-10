@@ -1,52 +1,66 @@
 <div class="form-group">
-  <input type="text" class="form-control" required [(ngModel)]="rangeStart"
+  <input type="number" class="form-control" required [(ngModel)]="rangeStart"
          value="rangeStart">
   <small class="form-text text-muted">Range from</small>
-  <input type="text" class="form-control" required [(ngModel)]="rangeEnd" value="rangeEnd">
+  <input type="number" class="form-control" required [(ngModel)]="rangeEnd" value="rangeEnd">
   <small class="form-text text-muted">Range to</small>
-  <input type="text" class="form-control" required [(ngModel)]="populationAmount"
+  <input type="number" class="form-control" required [(ngModel)]="populationAmount"
          value="populationAmount">
-  <small class="form-text text-muted">Number of bits</small>
-  <input type="text" class="form-control" required [(ngModel)]="numberOfBits"
-         value="numberOfBits">
   <small class="form-text text-muted">Amount of Population</small>
-  <input type="text" class="form-control" required [(ngModel)]="epochsAmount"
+  <input type="number" class="form-control" required [(ngModel)]="numberOfBits"
+         value="numberOfBits">
+  <small class="form-text text-muted">Number of bits</small>
+  <input type="number" class="form-control" required [(ngModel)]="epochsAmount"
          value="epochsAmount">
   <small class="form-text text-muted">Amount of Epochs</small>
-  <input type="text" class="form-control" required [(ngModel)]="bestAndTournamentChro"
+  <input type="number" class="form-control" required [(ngModel)]="bestAndTournamentChro"
          value="bestAndTournamentChro">
   <small class="form-text text-muted">Best and Tournament chromosome amount</small>
-  <input type="text" class="form-control" required [(ngModel)]="ESamount" value="ESamount">
+  <input type="number" class="form-control" required [(ngModel)]="ESamount" value="ESamount">
   <small class="form-text text-muted">Elite Strategy</small>
-  <input type="text" class="form-control" required [(ngModel)]="crossProbablitity"
+  <input type="number" class="form-control" required [(ngModel)]="crossProbability"
          value="crossProbablitity">
-  <small class="form-text text-muted">Cross Probability</small>
-  <input type="text" class="form-control" required [(ngModel)]="mutationProbablitity"
+  <small class="form-text text-muted">Cross Probability [%]</small>
+  <input type="number" class="form-control" required [(ngModel)]="mutationProbability"
          value="mutationProbablitity">
-  <small class="form-text text-muted">Mutation Probability</small>
-  <input type="text" class="form-control" [(ngModel)]="inversionProbablility"
+  <small class="form-text text-muted">Mutation Probability [%]</small>
+  <input type="number" class="form-control" [(ngModel)]="inversionProbability"
          value="inversionProbablility">
-  <small class="form-text text-muted">Inversion Probability</small>
+  <small class="form-text text-muted">Inversion Probability [%]</small>
   <select [(ngModel)]="selectionChoice" class="selection-input" id="selection-select">
-    <option *ngFor="let selectionM of selectionMethods"
-            [value]="selectionM.method"> {{selectionM.method}}</option>
+    <option *ngFor="let selectionM of selectionTypes | keyvalue"
+            [value]="selectionM.value"> {{selectionM.value}}</option>
   </select>
   <br/>
   <small class="form-text text-muted">Choose selection method</small>
   <br/>
   <select [(ngModel)]="crossChoice" class="selection-input" id="cross-select">
-    <option *ngFor="let crossM of crossMethods"
-            [value]="crossM.method"> {{crossM.method}}</option>
+    <option *ngFor="let crossM of crossTypes | keyvalue"
+            [value]="crossM.value"> {{crossM.value}}</option>
   </select>
   <br/>
   <small class="form-text text-muted">Choose cross method</small>
   <br/>
-  <select [(ngModel)]="mutationMetod" class="selection-input" id="muation-select">
-    <option *ngFor="let mutationM of mutationMethods"
-            [value]="mutationM.method"> {{mutationM.method}}</option>
+  <select [(ngModel)]="mutationChoice" class="selection-input" id="muation-select">
+    <option *ngFor="let mutationM of mutationTypes | keyvalue"
+            [value]="mutationM.value"> {{mutationM.value}}</option>
   </select>
   <br/>
   <small class="form-text text-muted">Choose mutation method</small>
   <br/>
-  <button type="submit" class="button-invisible" (click)="onSubmit()"> <u>Confirm</u></button>
+  <input type="checkbox" [(ngModel)]="maximization">
+  <small class="form-text text-muted">Min</small>
+  <button type="submit" class="button-invisible" (click)="onSubmit()"><u>Confirm</u></button>
+  <div class="chart-wrapper">
+    <canvas [hidden]="true" baseChart #myChart
+            height="1200" width="1600"
+            [datasets]="lineChartData"
+            [labels]="lineChartLabels"
+            [options]="lineChartOptions"
+            [colors]="lineChartColors"
+            [legend]="lineChartLegend"
+            [chartType]="lineChartType"
+            [plugins]="lineChartPlugins">
+    </canvas>
+  </div>
 </div>
