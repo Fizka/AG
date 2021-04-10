@@ -44,27 +44,28 @@ export class SelectionService {
     return nextPopulation;
   }
 
-  public selectionBest(population: Subject[], percent: number, findMin: boolean): Subject[] {
+  public selectionBest(population: Subject[], percent: number, findMax: boolean): Subject[] {
     let sub = population;
-    sub = findMin ? sub.sort((a, b) => a.fitnessValue - b.fitnessValue) : sub.sort((a, b) => b.fitnessValue - a.fitnessValue);
+    sub = findMax ? sub.sort((a, b) => b.fitnessValue - a.fitnessValue) : sub.sort((a, b) => a.fitnessValue - b.fitnessValue);
     sub.splice(SelectionService.getProcent(sub.length, percent));
     return sub;
   }
 
   public selectionRoulette(population: Subject[], howMuch): Subject[] {
-    let sub = population;
-    const poolIndex = this.getPoolIndex(0, sub.length - 1, SelectionService.getProcent(sub.length, howMuch));
-    let subb = sub.filter(p => {
-      return poolIndex.findIndex(val => val == sub.indexOf(p)) != -1;
-    });
-    return subb;
+    const sub = population;
+    const poolIndex = this.getPoolIndex(0, population.length - 1, SelectionService.getProcent(population.length, howMuch));
+    const gg = [];
+    for (const index of poolIndex) {
+      gg.push(sub[index]);
+    }
+    return gg;
   }
 
   private getPoolIndex(indexMin, indexMax, howMuch): number[] {
     const poolIndex = [];
     poolIndex.push(SelectionService.getRandomInt(indexMin, indexMax));
     while (poolIndex.length < howMuch) {
-      let randomIndex = SelectionService.getRandomInt(indexMin, indexMax);
+      const randomIndex = SelectionService.getRandomInt(indexMin, indexMax);
       if (poolIndex.indexOf(randomIndex) === -1) {
         poolIndex.push(randomIndex);
       }
@@ -74,7 +75,7 @@ export class SelectionService {
 
   public selectionTournament(population: Subject[], numberOfSections): Subject[] {
     const result: Subject[] = [];
-    let l = population.length;
+    const l = population.length;
     const presentNumber = Math.round(population.length / numberOfSections);
     if (l < numberOfSections) {
       result.push(this.findBest(this.findSet(population, 0, l), true));
@@ -103,4 +104,3 @@ export class SelectionService {
     return res[0];
   }
 }
-

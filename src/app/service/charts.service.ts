@@ -20,28 +20,13 @@ export class ChartsService {
   constructor(private filesService: GenerateFilesService) {
   }
 
+
   labels(epoch): Label[] {
     let label: Label[] = [];
     let max = 1;
-    let firstLabel = epoch * 0.2;
-    let secondLabel = epoch * 0.4;
-    let threeLabel = epoch * 0.6;
-    let fourthLabel = epoch * 0.8;
-
     while (max != epoch) {
-      if (max == 1) {
-        label.push('0');
-      } else if (max == firstLabel) {
-        label.push(firstLabel.toString());
-      } else if (max == secondLabel) {
-        label.push(secondLabel.toString());
-      } else if (max == threeLabel) {
-        label.push(threeLabel.toString());
-      } else if (max == fourthLabel) {
-        label.push(fourthLabel.toString());
-      } else {
-        label.push(' ');
-      }
+      let d = max - 1;
+      label.push(d.toString());
       max++;
     }
     label.push(epoch.toString());

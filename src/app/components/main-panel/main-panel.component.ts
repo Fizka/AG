@@ -17,7 +17,7 @@ import {Color, Label} from 'ng2-charts';
   templateUrl: './main-panel.component.html',
   styleUrls: ['./main-panel.component.css']
 })
-export class MainPanelComponent implements OnInit {
+export class MainPanelComponent {
 
   @ViewChild('myChart') Chart: ElementRef;
   population: Subject[] = [];
@@ -28,6 +28,7 @@ export class MainPanelComponent implements OnInit {
 
   lineChartOptions = {
     responsive: true,
+    fill: false
   };
   lineChartColors: Color[] = [
     {
@@ -44,8 +45,8 @@ export class MainPanelComponent implements OnInit {
   rangeEnd = 10;
   populationAmount = 20;
   numberOfBits = 10;
-  epochsAmount = 1000;
-  bestAndTournamentChro = 70;
+  epochsAmount = 100;
+  bestAndTournamentChro = 50;
   ESamount = 10;
   crossProbability = 80;
   mutationProbability = 40;
@@ -54,6 +55,7 @@ export class MainPanelComponent implements OnInit {
   crossChoice = CrossoverTypes.HOMOGENEOUS_CROSSOVER;
   mutationChoice = MutationTypes.BOUNDARY_MUTATION;
   maximization = false;
+
   lineChartLabels: Label[] = [];
 
   crossTypes = CrossoverTypes;
@@ -68,72 +70,51 @@ export class MainPanelComponent implements OnInit {
               private inversionService: InversionService,
               private filesService: GenerateFilesService,
               private chartService: ChartsService) {
-    // this.population = this.populationService.initPopulation(10, 10, 1, 10;
-    // console.log(this.population);
-    // this.population.forEach(subject => {
-    //   console.log('subject before');
-    //   console.log(subject);
-    //   subject = this.mutationService.performMutation(subject, this.mutationProbability, this.mutationChoice);
-    //   console.log('subject after');
-    //   console.log(subject);
-    // });
-  }
-
-  ngOnInit(): void {
-
   }
 
   algorithm(): void {
-
-    console.log('START');
     const startTime = Date.now();
+    this.lineChartLabels = this.chartService.labels(this.epochsAmount);
+
     // generacja początkowej populacji i obliczamy wartość funkcji
     this.population = this.populationService.initPopulation(this.populationAmount, this.numberOfBits, this.rangeStart, this.rangeEnd);
     let newPopulation: Subject[] = [];
-    this.lineChartLabels = this.chartService.labels(this.epochsAmount);
-    console.log(this.lineChartLabels);
+    let bestSubjects: Subject[] = [];
+
     for (let i = 0; i < this.epochsAmount; i++) {
       // ewaluacja
-      console.log('INIT');
       this.population.forEach(subject => {
         subject = this.populationService.decodeSubject(subject);
       });
-      console.log(this.population);
-      console.log('ELIT');
-      newPopulation = this.elitaryService.elitaryStrategy(this.population, this.maximization, this.ESamount);
-      console.log(this.population);
-      console.log('SELECTION');
+
+      bestSubjects = this.elitaryService.elitaryStrategy(this.population, this.maximization, this.ESamount);
+
       this.population = this.selectionService.performSelection(
         this.population, this.bestAndTournamentChro, this.maximization, this.selectionChoice);
-      console.log(this.population);
-      console.log('CROSSING');
+
       // krzyżowanie
-      while (newPopulation.length < this.populationAmount) {
+      while (newPopulation.length < (this.populationAmount - bestSubjects.length)) {
         const {parent1, parent2} = this.crossingService.prepareParents(this.population);
         const {child1, child2} = this.crossingService.performCrossover(parent1, parent2, this.crossProbability, this.crossChoice);
         newPopulation.push(child1, child2);
       }
-      console.log(newPopulation);
+
       // mutacja
-      console.log('MUTATION');
       newPopulation.forEach(subject => {
         subject = this.mutationService.performMutation(subject, this.mutationProbability, this.mutationChoice);
       });
-      console.log(newPopulation);
+
       // inwersja
-      console.log('INVERSION');
       newPopulation.forEach(subject => {
         subject = this.inversionService.performInversion(subject, this.inversionProbability);
       });
+
+      newPopulation = [...newPopulation, ...bestSubjects];
       newPopulation.forEach(subject => {
         subject = this.populationService.decodeSubject(subject);
       });
       this.population = newPopulation;
-      console.log(this.population);
-      console.log('Saving failes...');
       this.filesService.saveValues(this.population, this.maximization);
-      this.filesService.saveValues(this.population, this.maximization);
-
     }
 
     const timeSpent = this.countTime(startTime);
@@ -144,9 +125,8 @@ export class MainPanelComponent implements OnInit {
     this.doChart(this.chartService.lineChartDataMean, ChartsService.signatures[2]);
   }
 
-  public doChart(dataForChart, signature) {
-    console.log('Chart in progress...');
-    let myChart = new Chart(this.Chart.nativeElement.getContext('2d'), {
+  public doChart(dataForChart, signature): void {
+    const myChart = new Chart(this.Chart.nativeElement.getContext('2d'), {
       type: 'line',
       data: {
         labels: this.lineChartLabels,
@@ -159,15 +139,14 @@ export class MainPanelComponent implements OnInit {
           }]
         },
         animation: {
-          onComplete: function() {
+          onComplete(): void {
             myChart.update();
-            let image = myChart.toBase64Image();
-            let a = document.createElement('a');
+            const image = myChart.toBase64Image();
+            const a = document.createElement('a');
             a.href = myChart.toBase64Image();
             a.download = signature + '.jpg';
             a.click();
             myChart.update();
-            console.log('Chart completed');
           }
         }
       }
