@@ -43,17 +43,17 @@ export class MainPanelComponent {
 
   rangeStart = 1;
   rangeEnd = 10;
-  populationAmount = 20;
-  numberOfBits = 10;
-  epochsAmount = 100;
-  bestAndTournamentChro = 50;
+  populationAmount = 100;
+  numberOfBits = 40;
+  epochsAmount = 1000;
+  bestAndTournamentChro = 20;
   ESamount = 10;
-  crossProbability = 80;
+  crossProbability = 60;
   mutationProbability = 40;
-  inversionProbability = 20;
-  selectionChoice = SelectionTypes.ROULETTE_SELECTION;
-  crossChoice = CrossoverTypes.HOMOGENEOUS_CROSSOVER;
-  mutationChoice = MutationTypes.BOUNDARY_MUTATION;
+  inversionProbability = 10;
+  selectionChoice = SelectionTypes.BEST_SELECTION;
+  crossChoice = CrossoverTypes.TWO_POINTS_CROSSOVER;
+  mutationChoice = MutationTypes.TWO_POINTS_MUTATION;
   maximization = false;
 
   lineChartLabels: Label[] = [];
@@ -118,7 +118,7 @@ export class MainPanelComponent {
     }
 
     const timeSpent = this.countTime(startTime);
-    console.log('Time spent: ' + timeSpent);
+    this.showAlert(timeSpent);
     this.filesService.prepareFiles();
     this.doChart(this.lineChartData, ChartsService.signatures[0]);
     this.doChart(this.chartService.lineChartDataSTD, ChartsService.signatures[1]);
@@ -175,5 +175,11 @@ export class MainPanelComponent {
   countTime(startTime: number): number {
     const milliseconds = Date.now() - startTime;
     return milliseconds / 1000;
+  }
+
+  showAlert(time: number): void {
+    const best = this.filesService.bestSubject;
+    const message = `Found solution in ${time} seconds\n\nf(${best._x}, ${best._y}) = ${best.fitnessValue}`;
+    alert(message);
   }
 }
