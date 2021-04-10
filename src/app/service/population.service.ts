@@ -21,9 +21,10 @@ export class PopulationService {
     this.bottom = bottom;
     this.upper = upper;
 
-    const population: Subject[] = [];
-    const subject = new Subject();
+    let population: Subject[] = [];
+    let subject = new Subject();
     for (let i = 0; i < populationSize; i++) {
+      subject = new Subject();
       const x = PopulationService.generateChromosome(chromosomeLength);
       const y = PopulationService.generateChromosome(chromosomeLength);
       subject.setX(x, this.decodeChromosome(x));

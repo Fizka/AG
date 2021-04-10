@@ -45,7 +45,7 @@ export class CrossingService {
     child2.x = x.parent2;
     child2.y = y.parent2;
 
-    return { child1, child2 };
+    return {child1, child2};
   }
 
   private static homogeneousCrossing(chromosome1: string, chromosome2: string): Parents {
@@ -56,21 +56,21 @@ export class CrossingService {
         chromosome2 = chromosome2.slice(0, i) + bit + chromosome2.slice(i + 1);
       }
     }
-    return { parent1: chromosome1, parent2: chromosome2 };
+    return {parent1: chromosome1, parent2: chromosome2};
   }
 
   private onePointCrossing(chromosome1: string, chromosome2: string): Parents {
     const piece = chromosome1.slice(this.index1);
     chromosome1 = chromosome1.slice(0, this.index1) + chromosome2.slice(this.index1);
     chromosome2 = chromosome2.slice(0, this.index1) + piece;
-    return { parent1: chromosome1, parent2: chromosome2 };
+    return {parent1: chromosome1, parent2: chromosome2};
   }
 
   private twoPointsCrossing(chromosome1: string, chromosome2: string): Parents {
     const piece = chromosome1.slice(this.index1, this.index2);
     chromosome1 = chromosome1.slice(0, this.index1) + chromosome2.slice(this.index1, this.index2) + chromosome1.slice(this.index2);
     chromosome2 = chromosome2.slice(0, this.index1) + piece + chromosome2.slice(this.index2);
-    return { parent1: chromosome1, parent2: chromosome2 };
+    return {parent1: chromosome1, parent2: chromosome2};
   }
 
   private threePointsCrossing(chromosome1: string, chromosome2: string): Parents {
@@ -79,10 +79,10 @@ export class CrossingService {
     chromosome1 = chromosome1.slice(0, this.index1) + chromosome2.slice(this.index1, this.index2)
       + chromosome1.slice(this.index2, this.index3) + chromosome2.slice(this.index3);
     chromosome2 = chromosome2.slice(0, this.index1) + piece1 + chromosome2.slice(this.index2, this.index3) + piece2;
-    return { parent1: chromosome1, parent2: chromosome2 };
+    return {parent1: chromosome1, parent2: chromosome2};
   }
 
-  private prepareIndexes(parentSize: number): void{
+  private prepareIndexes(parentSize: number): void {
     this.index1 = Math.floor(Math.random() * (parentSize - 1));
     this.index2 = this.index1 + Math.floor(Math.random() * (parentSize - this.index1));
     this.index3 = this.index2 + Math.floor(Math.random() * (parentSize - this.index2));
@@ -130,6 +130,6 @@ export class CrossingService {
       }
       return CrossingService.prepareChildren(x, y);
     }
-    return { child1: parent1, child2: parent2 };
+    return {child1: parent1, child2: parent2};
   }
 }

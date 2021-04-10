@@ -53,36 +53,39 @@ export class SelectionService {
 
   public selectionRoulette(population: Subject[], howMuch): Subject[] {
     let sub = population;
-    const poolIndex = this.getPoolIndex(0, sub.length - 1, howMuch);
-    sub = sub.filter(p => {
-      return poolIndex.findIndex(val => val === sub.indexOf(p)) !== -1;
+    const poolIndex = this.getPoolIndex(0, sub.length - 1, SelectionService.getProcent(sub.length, howMuch));
+    let subb = sub.filter(p => {
+      return poolIndex.findIndex(val => val == sub.indexOf(p)) != -1;
     });
-    return sub;
+    return subb;
   }
 
   private getPoolIndex(indexMin, indexMax, howMuch): number[] {
     const poolIndex = [];
     poolIndex.push(SelectionService.getRandomInt(indexMin, indexMax));
-    for (let i = 1; i < howMuch; i++) {
-      const randomIndex = SelectionService.getRandomInt(indexMin, indexMax);
-      poolIndex.findIndex(val => val === randomIndex) === -1 ? poolIndex.push(randomIndex) : howMuch++;
+    while (poolIndex.length < howMuch) {
+      let randomIndex = SelectionService.getRandomInt(indexMin, indexMax);
+      if (poolIndex.indexOf(randomIndex) === -1) {
+        poolIndex.push(randomIndex);
+      }
     }
     return poolIndex;
   }
 
   public selectionTournament(population: Subject[], numberOfSections): Subject[] {
     const result: Subject[] = [];
+    let l = population.length;
     const presentNumber = Math.round(population.length / numberOfSections);
-    if (population.length < numberOfSections) {
-      result.push(this.findBest(this.findSet(population, 0, population.length), true));
+    if (l < numberOfSections) {
+      result.push(this.findBest(this.findSet(population, 0, l), true));
     } else {
       result.push(this.findBest(this.findSet(population, 0, presentNumber - 1), true));
     }
     for (let i = 1; i < numberOfSections; i++) {
       result.push(this.findBest(this.findSet(population, i * presentNumber, (i * presentNumber + presentNumber - 1)), true));
     }
-    if (population.length % numberOfSections !== 0) {
-      result.push(this.findBest(this.findSet(population, population.length - (population.length % numberOfSections), population.length), true));
+    if (l % numberOfSections !== 0) {
+      result.push(this.findBest(this.findSet(population, l - (l % numberOfSections), l), true));
     }
     return result;
   }

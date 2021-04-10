@@ -1,4 +1,4 @@
-.form-control{
+.form-control {
   color: whitesmoke !important;
 }
 
@@ -7,7 +7,7 @@ input {
   font-weight: 600;
 }
 
-.selection-input{
+.selection-input {
   text-align-last: center;
   width: 100%;
   margin: 20px 2px 0 2px;
@@ -16,10 +16,10 @@ input {
 }
 
 .text-muted {
-  color:whitesmoke !important;
+  color: whitesmoke !important;
 }
 
-.button-invisible{
+.button-invisible {
   height: 44px;
   font-size: 28px;
   color: whitesmoke;
@@ -36,4 +36,8 @@ input::-webkit-inner-spin-button {
 
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.chart-vis {
+  z-index: -1;
 }

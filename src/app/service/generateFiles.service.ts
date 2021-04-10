@@ -8,9 +8,9 @@ export class GenerateFilesService {
 
   private bestSubject: Subject;
 
-  private bestValues: number[] = [];
-  private meanValues: number[] = [];
-  private stdValues: number[] = [];
+  public bestValues: number[] = [];
+  public meanValues: number[] = [];
+  public stdValues: number[] = [];
 
   private setting = {
     element: {
@@ -84,5 +84,6 @@ export class GenerateFilesService {
     const event = new MouseEvent('click');
     element.dispatchEvent(event);
   }
+
 
 }

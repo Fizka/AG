@@ -48,5 +48,19 @@
   <br/>
   <small class="form-text text-muted">Choose mutation method</small>
   <br/>
-  <button type="submit" class="button-invisible" (click)="onSubmit()"> <u>Confirm</u></button>
+  <input type="checkbox" [(ngModel)]="maximization">
+  <small class="form-text text-muted">Min</small>
+  <button type="submit" class="button-invisible" (click)="onSubmit()"><u>Confirm</u></button>
+  <div class="chart-wrapper">
+    <canvas [hidden]="true" baseChart #myChart
+            height="1200" width="1600"
+            [datasets]="lineChartData"
+            [labels]="lineChartLabels"
+            [options]="lineChartOptions"
+            [colors]="lineChartColors"
+            [legend]="lineChartLegend"
+            [chartType]="lineChartType"
+            [plugins]="lineChartPlugins">
+    </canvas>
+  </div>
 </div>
