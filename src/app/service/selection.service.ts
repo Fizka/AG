@@ -22,7 +22,7 @@ export class SelectionService {
   private static getRandomInt(indexMin, indexMax): number {
     indexMin = Math.ceil(indexMin);
     indexMax = Math.floor(indexMax);
-    return Math.floor(Math.random() * (indexMax - indexMin)) + indexMin;
+    return Math.random() * (indexMax - indexMin) + indexMin;
   }
 
   performSelection(population: Subject[], parameter: number, maximization: boolean, selectionType: SelectionTypes): Subject[] {
@@ -53,12 +53,31 @@ export class SelectionService {
 
   public selectionRoulette(population: Subject[], howMuch): Subject[] {
     let sub = population;
-    const poolIndex = this.getPoolIndex(0, population.length - 1, SelectionService.getProcent(population.length, howMuch));
-    let gg = [];
-    for(let f =0; f<poolIndex.length; f++){
-      gg.push(sub[poolIndex[f]])
+    let gg: Mark[] = [];
+    let score: Subject[] = [];
+    let sum = 0;
+    sub.forEach(p => {
+      sum += p.fitnessValue;
+    });
+    let last = 0;
+    population.forEach(p => {
+      let mark: Mark = new Mark();
+      mark.mark = p.fitnessValue / sum;
+      mark.sub = p;
+      mark.start = last;
+      mark.stop = last + mark.mark;
+      last += mark.mark;
+      gg.push(mark);
+    });
+    let randomValues: number [] = this.getPoolIndex(0, 1, SelectionService.getProcent(population.length, howMuch));
+    for (let u = 0; u < howMuch; u++) {
+      gg.forEach(p => {
+        if (p.start <= randomValues[u] && p.stop > randomValues[u]) {
+          score.push(p.sub);
+        }
+      });
     }
-    return gg;
+    return score;
   }
 
   private getPoolIndex(indexMin, indexMax, howMuch): number[] {
@@ -105,3 +124,9 @@ export class SelectionService {
   }
 }
 
+export class Mark {
+  sub: Subject;
+  mark: number;
+  start: number;
+  stop: number;
+}
