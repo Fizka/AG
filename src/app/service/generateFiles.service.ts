@@ -31,11 +31,11 @@ export class GenerateFilesService {
   private saveMinMaxValue(population: Subject[], maximization: boolean): void {
     population = GenerateFilesService.sortPopulation(population, maximization);
     const best = population[0];
-    if (!this.bestSubject || this.bestSubject.fitnessValue < best.fitnessValue && maximization
-      || this.bestSubject.fitnessValue > best.fitnessValue && ! maximization) {
+    if (!this.bestSubject || (this.bestSubject.fitnessValue < best.fitnessValue && maximization)
+      || (this.bestSubject.fitnessValue > best.fitnessValue && ! maximization)) {
       this.best = best;
     }
-    this.bestValues.push(best.fitnessValue);
+    this.bestValues.push(this.best.fitnessValue);
   }
 
   private getMeanValue(population: Subject[]): number {
