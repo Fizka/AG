@@ -21,7 +21,7 @@ export class PopulationService {
     this.bottom = bottom;
     this.upper = upper;
 
-    let population: Subject[] = [];
+    const population: Subject[] = [];
     let subject = new Subject();
     for (let i = 0; i < populationSize; i++) {
       subject = new Subject();

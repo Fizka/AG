@@ -44,19 +44,19 @@ export class SelectionService {
     return nextPopulation;
   }
 
-  public selectionBest(population: Subject[], percent: number, findMin: boolean): Subject[] {
+  public selectionBest(population: Subject[], percent: number, findMax: boolean): Subject[] {
     let sub = population;
-    sub = findMin ? sub.sort((a, b) => a.fitnessValue - b.fitnessValue) : sub.sort((a, b) => b.fitnessValue - a.fitnessValue);
+    sub = findMax ? sub.sort((a, b) => b.fitnessValue - a.fitnessValue) : sub.sort((a, b) => a.fitnessValue - b.fitnessValue);
     sub.splice(SelectionService.getProcent(sub.length, percent));
     return sub;
   }
 
   public selectionRoulette(population: Subject[], howMuch): Subject[] {
-    let sub = population;
+    const sub = population;
     const poolIndex = this.getPoolIndex(0, population.length - 1, SelectionService.getProcent(population.length, howMuch));
-    let gg = [];
-    for(let f =0; f<poolIndex.length; f++){
-      gg.push(sub[poolIndex[f]])
+    const gg = [];
+    for (const index of poolIndex) {
+      gg.push(sub[index]);
     }
     return gg;
   }
@@ -65,7 +65,7 @@ export class SelectionService {
     const poolIndex = [];
     poolIndex.push(SelectionService.getRandomInt(indexMin, indexMax));
     while (poolIndex.length < howMuch) {
-      let randomIndex = SelectionService.getRandomInt(indexMin, indexMax);
+      const randomIndex = SelectionService.getRandomInt(indexMin, indexMax);
       if (poolIndex.indexOf(randomIndex) === -1) {
         poolIndex.push(randomIndex);
       }
@@ -75,7 +75,7 @@ export class SelectionService {
 
   public selectionTournament(population: Subject[], numberOfSections): Subject[] {
     const result: Subject[] = [];
-    let l = population.length;
+    const l = population.length;
     const presentNumber = Math.round(population.length / numberOfSections);
     if (l < numberOfSections) {
       result.push(this.findBest(this.findSet(population, 0, l), true));
@@ -104,4 +104,3 @@ export class SelectionService {
     return res[0];
   }
 }
-
