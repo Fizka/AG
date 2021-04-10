@@ -92,7 +92,7 @@ export class CrossingService {
     const parent1 = Math.floor(Math.random() * (population.length - 1));
     let parent2 = Math.floor(Math.random() * (population.length - 1));
     while (parent1 === parent2) {
-      parent2 = Math.floor(Math.random() * (population.length - 1));
+      parent2 = Math.round(Math.random() * (population.length - 1));
     }
     return {parent1: population[parent1], parent2: population[parent2]};
   }
