@@ -44,9 +44,10 @@ export class SelectionService {
     return nextPopulation;
   }
 
-  public selectionBest(population: Subject[], percent: number, findMin: boolean): Subject[] {
+  public selectionBest(population: Subject[], percent: number, findMax: boolean): Subject[] {
     let sub = population;
-    sub = findMin ? sub.sort((a, b) => a.fitnessValue - b.fitnessValue) : sub.sort((a, b) => b.fitnessValue - a.fitnessValue);
+    sub = findMax ? population.sort((a, b) => b.fitnessValue - a.fitnessValue)
+      : population.sort((a, b) => a.fitnessValue - b.fitnessValue);
     sub.splice(SelectionService.getProcent(sub.length, percent));
     return sub;
   }

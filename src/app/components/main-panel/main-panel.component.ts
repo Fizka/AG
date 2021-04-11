@@ -81,40 +81,47 @@ export class MainPanelComponent {
     let newPopulation: Subject[] = [];
     let bestSubjects: Subject[] = [];
 
+    debugger;
     for (let i = 0; i < this.epochsAmount; i++) {
       // ewaluacja
-      this.population.forEach(subject => {
-        subject = this.populationService.decodeSubject(subject);
-      });
+      this.ewaluacja();
+      // this.population.forEach(subject => {
+      //   subject = this.populationService.decodeSubject(subject);
+      // });
 
       bestSubjects = this.elitaryService.elitaryStrategy(this.population, this.maximization, this.ESamount);
 
-      this.population = this.selectionService.performSelection(
-        this.population, this.bestAndTournamentChro, this.maximization, this.selectionChoice);
+      this.selekcja();
+      // this.population = this.selectionService.performSelection(
+      //   this.population, this.bestAndTournamentChro, this.maximization, this.selectionChoice);
 
       // krzyżowanie
-      while (newPopulation.length < (this.populationAmount - bestSubjects.length)) {
-        const {parent1, parent2} = this.crossingService.prepareParents(this.population);
-        const {child1, child2} = this.crossingService.performCrossover(parent1, parent2, this.crossProbability, this.crossChoice);
-        newPopulation.push(child1, child2);
-      }
+      newPopulation = this.krzyzowanie(newPopulation, bestSubjects);
+      // while (newPopulation.length < (this.populationAmount - bestSubjects.length)) {
+      //   const {parent1, parent2} = this.crossingService.prepareParents(this.population);
+      //   const {child1, child2} = this.crossingService.performCrossover(parent1, parent2, this.crossProbability, this.crossChoice);
+      //   newPopulation.push(child1, child2);
+      // }
 
       // mutacja
-      newPopulation.forEach(subject => {
-        subject = this.mutationService.performMutation(subject, this.mutationProbability, this.mutationChoice);
-      });
+      newPopulation = this.mutacja(newPopulation);
+      // newPopulation.forEach(subject => {
+      //   subject = this.mutationService.performMutation(subject, this.mutationProbability, this.mutationChoice);
+      // });
 
       // inwersja
-      newPopulation.forEach(subject => {
-        subject = this.inversionService.performInversion(subject, this.inversionProbability);
-      });
+      newPopulation = this.inwersja(newPopulation);
+      // newPopulation.forEach(subject => {
+      //   subject = this.inversionService.performInversion(subject, this.inversionProbability);
+      // });
 
       newPopulation = [...newPopulation, ...bestSubjects];
-      newPopulation.forEach(subject => {
-        subject = this.populationService.decodeSubject(subject);
-      });
-      this.population = newPopulation;
-      this.filesService.saveValues(this.population, this.maximization);
+      this.zapis(newPopulation);
+      // newPopulation.forEach(subject => {
+      //   subject = this.populationService.decodeSubject(subject);
+      // });
+      // this.population = newPopulation;
+      // this.filesService.saveValues(this.population, this.maximization);
     }
 
     const timeSpent = this.countTime(startTime);
@@ -140,13 +147,13 @@ export class MainPanelComponent {
         },
         animation: {
           onComplete(): void {
-            myChart.update();
-            const image = myChart.toBase64Image();
+            // myChart.update();
+            // const image = myChart.toBase64Image();
             const a = document.createElement('a');
             a.href = myChart.toBase64Image();
             a.download = signature + '.jpg';
             a.click();
-            myChart.update();
+            // myChart.update();
           }
         }
       }
@@ -154,6 +161,7 @@ export class MainPanelComponent {
   }
 
   onSubmit(): void {
+    this.filesService.clearValues();
     console.log(this.rangeStart,
       this.rangeEnd,
       this.populationAmount,
@@ -181,5 +189,52 @@ export class MainPanelComponent {
     const best = this.filesService.bestSubject;
     const message = `Found solution in ${time} seconds\n\nf(${best._x}, ${best._y}) = ${best.fitnessValue}`;
     alert(message);
+  }
+
+  ewaluacja(): void {
+    this.population.forEach(subject => {
+      subject = this.populationService.decodeSubject(subject);
+    });
+  }
+
+  selekcja(): void {
+    this.population = this.selectionService.performSelection(
+      this.population, this.bestAndTournamentChro, this.maximization, this.selectionChoice);
+  }
+
+  krzyzowanie(newPopulation: Subject[], bestSubjects: Subject[]): Subject[] {
+    while (newPopulation.length < (this.populationAmount - bestSubjects.length)) {
+      const {parent1, parent2} = this.crossingService.prepareParents(this.population);
+      const {child1, child2} = this.crossingService.performCrossover(parent1, parent2, this.crossProbability, this.crossChoice);
+      newPopulation.push(child1, child2);
+    }
+    return newPopulation;
+  }
+
+  mutacja(newPopulation: Subject[]): Subject[] {
+    newPopulation.forEach(subject => {
+      subject = this.mutationService.performMutation(subject, this.mutationProbability, this.mutationChoice);
+    });
+    return newPopulation;
+  }
+
+  inwersja(newPopulation: Subject[]): Subject[] {
+    newPopulation.forEach(subject => {
+      subject = this.inversionService.performInversion(subject, this.inversionProbability);
+    });
+    return newPopulation;
+  }
+
+  zapis(newPopulation: Subject[]): void {
+    newPopulation = this.e(newPopulation);
+    this.population = newPopulation;
+    this.filesService.saveValues(this.population, this.maximization);
+  }
+
+  e(newPopulation: Subject[]): Subject[] {
+    newPopulation.forEach(subject => {
+      subject = this.populationService.decodeSubject(subject);
+    });
+    return newPopulation;
   }
 }

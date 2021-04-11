@@ -3,6 +3,7 @@ export class Subject {
 	y: string;
 	_x: number;
 	_y: number;
+	val: number
 
   setX(x: string, _x: number): void {
     this.x = x;
@@ -12,6 +13,10 @@ export class Subject {
   setY(y: string, _y: number): void {
     this.y = y;
     this._y = _y;
+  }
+
+  setVal(): void {
+    this.val = this.fitnessValue;
   }
 
   get fitnessValue(): number {
