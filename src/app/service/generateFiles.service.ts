@@ -66,6 +66,13 @@ export class GenerateFilesService {
     this.saveStdValue(population);
   }
 
+  clearValues(): void {
+    this.best = null;
+    this.bestValues = [];
+    this.meanValues = [];
+    this.stdValues = [];
+  }
+
   prepareFiles(): void {
     this.dynamicDownload({
       fileName: 'Best values',

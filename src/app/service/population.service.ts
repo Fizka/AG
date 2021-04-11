@@ -37,6 +37,7 @@ export class PopulationService {
   decodeSubject(subject: Subject): Subject {
     subject._x = this.decodeChromosome(subject.x);
     subject._y = this.decodeChromosome(subject.y);
+    subject.setVal();
     return subject;
   }
 
