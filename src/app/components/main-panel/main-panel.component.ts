@@ -93,7 +93,7 @@ export class MainPanelComponent {
       this.selekcja();
       // this.population = this.selectionService.performSelection(
       //   this.population, this.bestAndTournamentChro, this.maximization, this.selectionChoice);
-
+      debugger;
       // krzyżowanie
       newPopulation = this.krzyzowanie(newPopulation, bestSubjects);
       // while (newPopulation.length < (this.populationAmount - bestSubjects.length)) {
@@ -178,6 +178,7 @@ export class MainPanelComponent {
       this.mutationChoice,
       this.maximization);
     this.algorithm();
+
   }
 
   countTime(startTime: number): number {
