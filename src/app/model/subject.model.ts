@@ -3,7 +3,7 @@ export class Subject {
 	y: string;
 	_x: number;
 	_y: number;
-	val: number
+	val: number;
 
   setX(x: string, _x: number): void {
     this.x = x;
