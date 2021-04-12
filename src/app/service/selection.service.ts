@@ -45,24 +45,24 @@ export class SelectionService {
   }
 
   public selectionBest(population: Subject[], percent: number, findMax: boolean): Subject[] {
-    let sub = population;
-    sub = findMax ? population.sort((a, b) => b.fitnessValue - a.fitnessValue)
-      : population.sort((a, b) => a.fitnessValue - b.fitnessValue);
+    const sub = population;
+    findMax ? sub.sort((a, b) => b.fitnessValue - a.fitnessValue)
+      : sub.sort((a, b) => a.fitnessValue - b.fitnessValue);
     sub.splice(SelectionService.getProcent(sub.length, percent));
     return sub;
   }
 
   public selectionRoulette(population: Subject[], howMuch): Subject[] {
-    let sub = population;
-    let gg: Mark[] = [];
-    let score: Subject[] = [];
+    const sub = population;
+    const gg: Mark[] = [];
+    const score: Subject[] = [];
     let sum = 0;
     sub.forEach(p => {
       sum += p.fitnessValue;
     });
     let last = 0;
     population.forEach(p => {
-      let mark: Mark = new Mark();
+      const mark: Mark = new Mark();
       mark.mark = p.fitnessValue / sum;
       mark.sub = p;
       mark.start = last;
@@ -70,7 +70,7 @@ export class SelectionService {
       last += mark.mark;
       gg.push(mark);
     });
-    let randomValues: number [] = this.getPoolIndex(0, 1, SelectionService.getProcent(population.length, howMuch));
+    const randomValues: number [] = this.getPoolIndex(0, 1, SelectionService.getProcent(population.length, howMuch));
     for (let u = 0; u < howMuch; u++) {
       gg.forEach(p => {
         if (p.start <= randomValues[u] && p.stop > randomValues[u]) {
@@ -85,7 +85,7 @@ export class SelectionService {
     const poolIndex = [];
     poolIndex.push(SelectionService.getRandomInt(indexMin, indexMax));
     while (poolIndex.length < howMuch) {
-      let randomIndex = SelectionService.getRandomInt(indexMin, indexMax);
+      const randomIndex = SelectionService.getRandomInt(indexMin, indexMax);
       if (poolIndex.indexOf(randomIndex) === -1) {
         poolIndex.push(randomIndex);
       }
@@ -95,10 +95,10 @@ export class SelectionService {
 
   public selectionTournament(population: Subject[], numberOfSections): Subject[] {
     const result: Subject[] = [];
-    let l = population.length;
+    const l = population.length;
     const presentNumber = Math.round(population.length / numberOfSections);
     if (l < numberOfSections) {
-      result.push(this.findBest(this.findSet(population, 0, l), true));
+      return population;
     } else {
       result.push(this.findBest(this.findSet(population, 0, presentNumber - 1), true));
     }
@@ -120,8 +120,8 @@ export class SelectionService {
   }
 
   findBest(arr: Subject[], isMax): Subject {
-    const res = isMax ? arr.sort((a, b) => b.fitnessValue - a.fitnessValue) : arr.sort((a, b) => a.fitnessValue - b.fitnessValue);
-    return res[0];
+    isMax ? arr.sort((a, b) => b.fitnessValue - a.fitnessValue) : arr.sort((a, b) => a.fitnessValue - b.fitnessValue);
+    return arr[0];
   }
 }
 

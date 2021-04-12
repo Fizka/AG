@@ -23,9 +23,16 @@ export class GenerateFilesService {
   };
 
   private static sortPopulation(population: Subject[], maximization: boolean): Subject[] {
-    population = maximization ? population.sort((a, b) => b.fitnessValue - a.fitnessValue)
+    maximization ? population.sort((a, b) => b.fitnessValue - a.fitnessValue)
       : population.sort((a, b) => a.fitnessValue - b.fitnessValue);
     return population;
+  }
+
+  clear(): void {
+    this.best = undefined;
+    this.bestValues = [];
+    this.meanValues = [];
+    this.stdValues = [];
   }
 
   private saveMinMaxValue(population: Subject[], maximization: boolean): void {
@@ -64,13 +71,6 @@ export class GenerateFilesService {
     this.saveMinMaxValue(population, maximization);
     this.saveMeanValue(population);
     this.saveStdValue(population);
-  }
-
-  clearValues(): void {
-    this.best = null;
-    this.bestValues = [];
-    this.meanValues = [];
-    this.stdValues = [];
   }
 
   prepareFiles(): void {

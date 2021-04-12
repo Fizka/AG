@@ -81,7 +81,6 @@ export class MainPanelComponent {
     let newPopulation: Subject[] = [];
     let bestSubjects: Subject[] = [];
 
-    debugger;
     for (let i = 0; i < this.epochsAmount; i++) {
       // ewaluacja
       this.ewaluacja();
@@ -147,13 +146,12 @@ export class MainPanelComponent {
         },
         animation: {
           onComplete(): void {
-            // myChart.update();
-            // const image = myChart.toBase64Image();
+            myChart.update();
             const a = document.createElement('a');
             a.href = myChart.toBase64Image();
             a.download = signature + '.jpg';
             a.click();
-            // myChart.update();
+            myChart.update();
           }
         }
       }
@@ -161,7 +159,10 @@ export class MainPanelComponent {
   }
 
   onSubmit(): void {
-    this.filesService.clearValues();
+    this.filesService.clear();
+    this.lineChartData = [
+      {data: this.filesService.bestValues, label: ChartsService.signatures[0]},
+    ];
     console.log(this.rangeStart,
       this.rangeEnd,
       this.populationAmount,
@@ -177,7 +178,6 @@ export class MainPanelComponent {
       this.mutationChoice,
       this.maximization);
     this.algorithm();
-
   }
 
   countTime(startTime: number): number {
