@@ -39,7 +39,7 @@ export class GenerateFilesService {
     population = GenerateFilesService.sortPopulation(population, maximization);
     const best = population[0];
     if (!this.bestSubject || (this.bestSubject.fitnessValue < best.fitnessValue && maximization)
-      || (this.bestSubject.fitnessValue > best.fitnessValue && ! maximization)) {
+      || (this.bestSubject.fitnessValue > best.fitnessValue && !maximization)) {
       this.best = best;
     }
     this.bestValues.push(this.best.fitnessValue);

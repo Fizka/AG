@@ -22,6 +22,12 @@ export class SelectionService {
   private static getRandomInt(indexMin, indexMax): number {
     indexMin = Math.ceil(indexMin);
     indexMax = Math.floor(indexMax);
+    return Math.floor(Math.random() * (indexMax - indexMin)) + indexMin;
+  }
+
+  private static getRandom(indexMin, indexMax): number {
+    indexMin = Math.ceil(indexMin);
+    indexMax = Math.floor(indexMax);
     return Math.random() * (indexMax - indexMin) + indexMin;
   }
 
@@ -37,7 +43,7 @@ export class SelectionService {
         break;
       }
       case SelectionTypes.TOURNAMENT_SELECTION: {
-        nextPopulation = this.selectionTournament(population, parameter);
+        nextPopulation = this.selectionTournament(population, parameter, maximization);
         break;
       }
     }
@@ -50,6 +56,16 @@ export class SelectionService {
       : sub.sort((a, b) => a.fitnessValue - b.fitnessValue);
     sub.splice(SelectionService.getProcent(sub.length, percent));
     return sub;
+  }
+
+  public selectionRoulettess(population: Subject[], howMuch): Subject[] {
+    let sub = population;
+    const poolIndex = this.getPoolIndex(0, population.length - 1, SelectionService.getProcent(population.length, howMuch));
+    let gg = [];
+    for (let f = 0; f < poolIndex.length; f++) {
+      gg.push(sub[poolIndex[f]]);
+    }
+    return gg;
   }
 
   public selectionRoulette(population: Subject[], howMuch): Subject[] {
@@ -83,9 +99,9 @@ export class SelectionService {
 
   private getPoolIndex(indexMin, indexMax, howMuch): number[] {
     const poolIndex = [];
-    poolIndex.push(SelectionService.getRandomInt(indexMin, indexMax));
+    poolIndex.push(SelectionService.getRandom(indexMin, indexMax));
     while (poolIndex.length < howMuch) {
-      const randomIndex = SelectionService.getRandomInt(indexMin, indexMax);
+      const randomIndex = SelectionService.getRandom(indexMin, indexMax);
       if (poolIndex.indexOf(randomIndex) === -1) {
         poolIndex.push(randomIndex);
       }
@@ -93,20 +109,26 @@ export class SelectionService {
     return poolIndex;
   }
 
-  public selectionTournament(population: Subject[], numberOfSections): Subject[] {
+  public selectionTournament(population: Subject[], numberOfSections, max): Subject[] {
     const result: Subject[] = [];
     const l = population.length;
     const presentNumber = Math.round(population.length / numberOfSections);
     if (l < numberOfSections) {
-      return population;
+      result.push(this.findBest(this.findSet(population, 0, l), max));
     } else {
-      result.push(this.findBest(this.findSet(population, 0, presentNumber - 1), true));
+      result.push(this.findBest(this.findSet(population, 0, presentNumber - 1), max));
     }
     for (let i = 1; i < numberOfSections; i++) {
-      result.push(this.findBest(this.findSet(population, i * presentNumber, (i * presentNumber + presentNumber - 1)), true));
+      let y = this.findSet(population, i * presentNumber, (i * presentNumber + presentNumber - 1));
+      if (y != undefined) {
+        result.push(this.findBest(y, max));
+      }
     }
     if (l % numberOfSections !== 0) {
-      result.push(this.findBest(this.findSet(population, l - (l % numberOfSections), l), true));
+      let d = this.findSet(population, l - (l % numberOfSections), l);
+      if (d != undefined) {
+        result.push(this.findBest(d, max));
+      }
     }
     return result;
   }
