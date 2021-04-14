@@ -86,13 +86,17 @@ export class SelectionService {
       last += mark.mark;
       gg.push(mark);
     });
-    const randomValues: number [] = this.getPoolIndex(0, 1, SelectionService.getProcent(population.length, howMuch));
-    for (let u = 0; u < howMuch; u++) {
-      gg.forEach(p => {
-        if (p.start <= randomValues[u] && p.stop > randomValues[u]) {
-          score.push(p.sub);
+    let rI = Math.random();
+    let val = gg.findIndex(p => p.start <= rI && p.stop > rI);
+    score.push(gg[val].sub);
+    while (score.length < SelectionService.getProcent(population.length, howMuch)) {
+      let randomIndex = Math.random();
+      let val = gg.findIndex(p => p.start <= randomIndex && p.stop > randomIndex);
+      if (val != -1) {
+        if (score.findIndex(d => gg[val].sub.x == d.x && gg[val].sub.y == d.y) == -1) {
+          score.push(gg[val].sub);
         }
-      });
+      }
     }
     return score;
   }
