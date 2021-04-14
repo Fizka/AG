@@ -83,6 +83,7 @@ export class MainPanelComponent {
 
     for (let i = 0; i < this.epochsAmount; i++) {
       // ewaluacja
+      let newPopulation: Subject[] = [];
       this.ewaluacja();
       // this.population.forEach(subject => {
       //   subject = this.populationService.decodeSubject(subject);
