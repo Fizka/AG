@@ -44,14 +44,14 @@ export class MainPanelComponent {
   rangeStart = 1;
   rangeEnd = 10;
   populationAmount = 100;
-  numberOfBits = 40;
+  numberOfBits = 20;
   epochsAmount = 1000;
-  bestAndTournamentChro = 20;
+  bestAndTournamentChro = 60;
   ESamount = 10;
   crossProbability = 60;
   mutationProbability = 40;
   inversionProbability = 10;
-  selectionChoice = SelectionTypes.BEST_SELECTION;
+  selectionChoice = SelectionTypes.ROULETTE_SELECTION;
   crossChoice = CrossoverTypes.TWO_POINTS_CROSSOVER;
   mutationChoice = MutationTypes.TWO_POINTS_MUTATION;
   maximization = false;
@@ -78,24 +78,21 @@ export class MainPanelComponent {
 
     // generacja początkowej populacji i obliczamy wartość funkcji
     this.population = this.populationService.initPopulation(this.populationAmount, this.numberOfBits, this.rangeStart, this.rangeEnd);
-    let newPopulation: Subject[] = [];
     let bestSubjects: Subject[] = [];
 
     for (let i = 0; i < this.epochsAmount; i++) {
       // ewaluacja
+      console.log(this.population)
       let newPopulation: Subject[] = [];
       this.ewaluacja();
-      // this.population.forEach(subject => {
-      //   subject = this.populationService.decodeSubject(subject);
-      // });
+
 
       bestSubjects = this.elitaryService.elitaryStrategy(this.population, this.maximization, this.ESamount);
-
+      console.log("SELECKJA")
       this.selekcja();
       // this.population = this.selectionService.performSelection(
       //   this.population, this.bestAndTournamentChro, this.maximization, this.selectionChoice);
-      debugger;
-      // krzyżowanie
+
       newPopulation = this.krzyzowanie(newPopulation, bestSubjects);
       // while (newPopulation.length < (this.populationAmount - bestSubjects.length)) {
       //   const {parent1, parent2} = this.crossingService.prepareParents(this.population);
@@ -103,19 +100,25 @@ export class MainPanelComponent {
       //   newPopulation.push(child1, child2);
       // }
 
-      // mutacja
+       // mutacja
+      console.log("MUTATION")
       newPopulation = this.mutacja(newPopulation);
       // newPopulation.forEach(subject => {
       //   subject = this.mutationService.performMutation(subject, this.mutationProbability, this.mutationChoice);
       // });
 
       // inwersja
+      console.log("INVERSION")
       newPopulation = this.inwersja(newPopulation);
       // newPopulation.forEach(subject => {
       //   subject = this.inversionService.performInversion(subject, this.inversionProbability);
       // });
+      //console.log(newPopulation.forEach(p=>console.log(p.fitnessValue)))
 
       newPopulation = [...newPopulation, ...bestSubjects];
+      //console.log(newPopulation.forEach(p=>console.log(p.fitnessValue)))
+
+      console.log("ZAPIS")
       this.zapis(newPopulation);
       // newPopulation.forEach(subject => {
       //   subject = this.populationService.decodeSubject(subject);
@@ -201,13 +204,14 @@ export class MainPanelComponent {
 
   selekcja(): void {
     this.population = this.selectionService.performSelection(
-      this.population, this.bestAndTournamentChro, this.maximization, this.selectionChoice);
+      this.population, this.bestAndTournamentChro, this.maximization, this.selectionChoice, this.populationAmount);
   }
 
   krzyzowanie(newPopulation: Subject[], bestSubjects: Subject[]): Subject[] {
     while (newPopulation.length < (this.populationAmount - bestSubjects.length)) {
       const {parent1, parent2} = this.crossingService.prepareParents(this.population);
       const {child1, child2} = this.crossingService.performCrossover(parent1, parent2, this.crossProbability, this.crossChoice);
+
       newPopulation.push(child1, child2);
     }
     return newPopulation;
