@@ -31,7 +31,7 @@ export class SelectionService {
     return Math.random() * (indexMax - indexMin) + indexMin;
   }
 
-  performSelection(population: Subject[], parameter: number, maximization: boolean, selectionType: SelectionTypes): Subject[] {
+  performSelection(population: Subject[], parameter: number, maximization: boolean, selectionType: SelectionTypes, popLen): Subject[] {
     let nextPopulation: Subject[];
     switch (selectionType) {
       case SelectionTypes.BEST_SELECTION: {
@@ -39,7 +39,7 @@ export class SelectionService {
         break;
       }
       case SelectionTypes.ROULETTE_SELECTION: {
-        nextPopulation = this.selectionRoulette(population, parameter);
+        nextPopulation = this.selectionRoulette(population, parameter, popLen);
         break;
       }
       case SelectionTypes.TOURNAMENT_SELECTION: {
@@ -68,10 +68,10 @@ export class SelectionService {
     return gg;
   }
 
-  public selectionRoulette(population: Subject[], howMuch): Subject[] {
+  public selectionRoulette(population: Subject[], howMuch, popLen): Subject[] {
     const sub = population;
     const gg: Mark[] = [];
-    const score: Subject[] = [];
+    let score: Subject[] = [];
     let sum = 0;
     sub.forEach(p => {
       sum += p.fitnessValue;
@@ -84,21 +84,44 @@ export class SelectionService {
       mark.start = last;
       mark.stop = last + mark.mark;
       last += mark.mark;
-      gg.push(mark);
+      if (mark != undefined) {
+        gg.push(mark);
+      }
     });
-    let rI = Math.random();
-    let val = gg.findIndex(p => p.start <= rI && p.stop > rI);
-    score.push(gg[val].sub);
-    while (score.length < SelectionService.getProcent(population.length, howMuch)) {
-      let randomIndex = Math.random();
-      let val = gg.findIndex(p => p.start <= randomIndex && p.stop > randomIndex);
-      if (val != -1) {
-        if (score.findIndex(d => gg[val].sub.x == d.x && gg[val].sub.y == d.y) == -1) {
-          score.push(gg[val].sub);
+    if (howMuch <= 50) {
+      let rI = Math.random();
+      let val = gg.findIndex(p => p.start <= rI && p.stop > rI);
+      if (gg[val].sub !== undefined && val != undefined) {
+        score = Array.of(gg[val].sub);
+      }
+      while (score.length < SelectionService.getProcent(popLen, howMuch)) {
+        let randomIndex = Math.random();
+        let val = gg.findIndex(p => p.start <= randomIndex && p.stop > randomIndex);
+        console.log(val);
+        if (val != undefined) {
+          if (score.findIndex(d => gg[val].sub.x == d.x && gg[val].sub.y == d.y) == -1) {
+            if (gg[val].sub != undefined) {
+              score.push(gg[val].sub);
+            }
+          }
+        }
+      }
+    }else{
+      while (sub.length != SelectionService.getProcent(popLen, howMuch)) {
+        let randomIndex = Math.random();
+        let val = gg.findIndex(p => p.start <= randomIndex && p.stop > randomIndex);
+        if (val != undefined) {
+          let popindex = sub.findIndex(d => gg[val].sub.x == d.x && gg[val].sub.y == d.y)
+          if (popindex != -1) {
+              sub.splice(popindex, 1)
+          }
         }
       }
     }
-    return score;
+    console.log(score.length);
+    score.pop();
+    console.log(score.forEach((p, i) => console.log(p.fitnessValue + ' ' + i)));
+    return howMuch > 50 ? sub : score;
   }
 
   private getPoolIndex(indexMin, indexMax, howMuch): number[] {
