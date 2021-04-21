@@ -1,0 +1,43 @@
+.form-control {
+  color: whitesmoke !important;
+}
+
+input {
+  text-align: center;
+  font-weight: 600;
+}
+
+.selection-input {
+  text-align-last: center;
+  width: 100%;
+  margin: 20px 2px 0 2px;
+  padding: 4px;
+  height: 32px;
+}
+
+.text-muted {
+  color: whitesmoke !important;
+}
+
+.button-invisible {
+  height: 44px;
+  font-size: 28px;
+  color: whitesmoke;
+  font-weight: bold;
+  background: transparent;
+  border: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.chart-vis {
+  z-index: -1;
+}

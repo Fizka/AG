@@ -8,6 +8,11 @@ export enum CrossoverTypes {
   HOMOGENEOUS_CROSSOVER = 'HOMOGENEOUS'
 }
 
+export enum EvoCrossoverTypes {
+  ARITHMETICAL_CROSSOVER = 'ARITHMETICAL',
+  HEURISTIC_CROSSOVER = 'HEURISTIC'
+}
+
 export interface Parents {
   parent1: string;
   parent2: string;
@@ -34,6 +39,42 @@ export class CrossingService {
 
   private static checkProbability(probability: number): boolean {
     return (Math.random() * 100) <= probability;
+  }
+
+
+  private static getValue(k: number, v1: number, v2: number): number {
+    return k * v1 + (1 - k) * v2;
+  }
+
+  private static setChromosome(k: number, parent1: Subject, parent2: Subject): Subject {
+    const chromosome = new Subject();
+    chromosome.setX(CrossingService.getValue(k, parent1._x, parent2._x).toString(), CrossingService.getValue(k, parent1._x, parent2._x));
+    chromosome.setY(CrossingService.getValue(k, parent1._y, parent2._y).toString(), CrossingService.getValue(k, parent1._y, parent2._y));
+    return chromosome;
+  }
+
+  private static arithmeticalCrossing(parent1: Subject, parent2: Subject): Children {
+    const k = Math.random();
+    const chromosome1 = CrossingService.setChromosome(k, parent1, parent2);
+    const chromosome2 = CrossingService.setChromosome(k, parent2, parent1);
+    return {child1: chromosome1, child2: chromosome2};
+  }
+
+  private static correctParents(parent1: Subject, parent2: Subject): boolean {
+    return parent2._x > parent1._x && parent2._y > parent1._y;
+  }
+
+  private static heuristicCrossing(parent1: Subject, parent2: Subject): Subject {
+    const k = Math.random();
+    if (CrossingService.correctParents(parent1, parent2)) {
+      const x = k * (parent2._x - parent1._x) + parent1._x;
+      const y = k * (parent2._y - parent1._y) + parent1._y;
+      const chromosome = new Subject();
+      chromosome.setX(x.toString(), x);
+      chromosome.setY(y.toString(), y);
+      return chromosome;
+    }
+    return null;
   }
 
   private static prepareChildren(x: Parents, y: Parents): Children {
@@ -131,5 +172,25 @@ export class CrossingService {
       return CrossingService.prepareChildren(x, y);
     }
     return {child1: parent1, child2: parent2};
+  }
+
+  performEvoCrossover(parent1: Subject, parent2: Subject, probability: number, selectedCross: EvoCrossoverTypes): Children {
+    let result: Children = {child1: null, child2: null};
+
+    if (CrossingService.checkProbability(probability)) {
+
+      switch (selectedCross) {
+        case EvoCrossoverTypes.ARITHMETICAL_CROSSOVER: {
+          result = CrossingService.arithmeticalCrossing(parent1, parent2);
+          break;
+        }
+        case EvoCrossoverTypes.HEURISTIC_CROSSOVER: {
+          result = {child1: CrossingService.heuristicCrossing(parent1, parent2), child2: null};
+          break;
+        }
+      }
+    }
+    console.log(result);
+    return result;
   }
 }

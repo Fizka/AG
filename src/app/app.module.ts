@@ -7,11 +7,13 @@ import { MainPanelComponent } from './components/main-panel/main-panel.component
 import {FormsModule} from '@angular/forms';
 import {ChartsModule} from 'ng2-charts';
 import {HttpClientModule} from '@angular/common/http';
+import {MainPanelEvolutionaryComponent} from './components/main-panel-evolutionary/main-panel-evolutionary.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MainPanelComponent
+    MainPanelComponent,
+    MainPanelEvolutionaryComponent
   ],
   imports: [
     BrowserModule,
