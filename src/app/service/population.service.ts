@@ -50,4 +50,26 @@ export class PopulationService {
       return (y === '1') ? x + Math.pow(2, i) : x;
     }, 0);
   }
+
+  initEvolutionaryPopulation(populationSize: number, bottom: number, upper: number): Subject[] {
+    this.bottom = bottom;
+    this.upper = upper;
+
+    const population: Subject[] = [];
+    let subject = new Subject();
+    for (let i = 0; i < populationSize; i++) {
+      subject = this.getSubject(this.bottom, this.upper);
+      population.push(subject);
+    }
+    return population;
+  }
+
+  getSubject(bottom: number, upper: number): Subject {
+    const subject = new Subject();
+    const x = bottom + Math.random() * (upper - bottom);
+    const y = bottom + Math.random() * (upper - bottom);
+    subject.setX(x.toString(), x);
+    subject.setY(y.toString(), y);
+    return subject;
+  }
 }

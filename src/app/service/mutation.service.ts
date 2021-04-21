@@ -7,6 +7,11 @@ export enum MutationTypes {
   BOUNDARY_MUTATION = 'BONDUARY'
 }
 
+export enum EvoMutationTypes {
+  EVEN_MUTATION = 'EVEN',
+  CHANGE_INDEX_MUTATION = 'CHANGE_INDEX'
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -50,6 +55,21 @@ export class MutationService {
     return subject;
   }
 
+  private static evenMutation(subject: Subject, bottom: number, upper: number): Subject {
+    const index = Math.random() > 0.5 ? 1 : 0;
+    const value = bottom + Math.random() * (upper - bottom);
+    index === 0 ? subject.setX(value.toString(), value) : subject.setY(value.toString(), value);
+    return subject;
+  }
+
+  private static changeIndexMutation(subject: Subject): Subject {
+    const a = subject._y;
+    const b = subject._x;
+    subject.setX(a.toString(), a);
+    subject.setY(b.toString(), b);
+    return subject;
+  }
+
   performMutation(subject: Subject, probability: number, selectedMutation: MutationTypes): Subject {
     if (MutationService.checkProbability(probability)) {
       switch (selectedMutation) {
@@ -70,5 +90,20 @@ export class MutationService {
     return subject;
   }
 
-
+  performEvolutionaryMutation(
+    subject: Subject, probability: number, selectedMutation: EvoMutationTypes, bottom: number, upper: number): Subject {
+    if (MutationService.checkProbability(probability)) {
+      switch (selectedMutation) {
+        case EvoMutationTypes.EVEN_MUTATION: {
+          subject = MutationService.evenMutation(subject, bottom, upper);
+          break;
+        }
+        case EvoMutationTypes.CHANGE_INDEX_MUTATION: {
+          subject = MutationService.changeIndexMutation(subject);
+          break;
+        }
+      }
+    }
+    return subject;
+  }
 }
