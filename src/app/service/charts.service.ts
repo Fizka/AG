@@ -22,10 +22,10 @@ export class ChartsService {
 
 
   labels(epoch): Label[] {
-    let label: Label[] = [];
+    const label: Label[] = [];
     let max = 1;
-    while (max != epoch) {
-      let d = max - 1;
+    while (max !== epoch) {
+      const d = max - 1;
       label.push(d.toString());
       max++;
     }

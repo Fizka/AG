@@ -25,6 +25,15 @@ export class MainPanelEvolutionaryComponent {
     {data: this.filesService.bestValues, label: ChartsService.signatures[0]},
   ];
 
+  lineChartDataSTD: ChartDataSets[] = [
+    {data: this.filesService.stdValues, label: ChartsService.signatures[1]},
+  ];
+
+  lineChartDataMean: ChartDataSets[] = [
+    {data: this.filesService.meanValues, label: ChartsService.signatures[2]},
+  ];
+
+
   lineChartOptions = {
     responsive: true,
     fill: false
@@ -74,6 +83,13 @@ export class MainPanelEvolutionaryComponent {
     this.lineChartData = [
       {data: this.filesService.bestValues, label: ChartsService.signatures[0]},
     ];
+    this.lineChartDataSTD = [
+      {data: this.filesService.stdValues, label: ChartsService.signatures[1]},
+    ];
+
+    this.lineChartDataMean = [
+      {data: this.filesService.meanValues, label: ChartsService.signatures[2]},
+    ];
     console.log(this.rangeStart,
       this.rangeEnd,
       this.populationAmount,
@@ -94,14 +110,15 @@ export class MainPanelEvolutionaryComponent {
     this.lineChartLabels = this.chartService.labels(this.epochsAmount);
 
     this.population = this.populationService.initEvolutionaryPopulation(this.populationAmount, this.rangeStart, this.rangeEnd);
-    let newPopulation: Subject[] = [];
     let bestSubjects: Subject[] = [];
 
     for (let i = 0; i < this.epochsAmount; i++) {
+      let newPopulation: Subject[] = [];
+
       bestSubjects = this.elitaryService.elitaryStrategy(this.population, this.maximization, this.ESamount);
 
       this.population = this.selectionService.performSelection(
-        this.population, this.bestAndTournamentChro, this.maximization, this.selectionChoice);
+        this.population, this.bestAndTournamentChro, this.maximization, this.selectionChoice, this.populationAmount);
 
       while (newPopulation.length < (this.populationAmount - bestSubjects.length)) {
         const {parent1, parent2} = this.crossingService.prepareParents(this.population);
@@ -131,8 +148,8 @@ export class MainPanelEvolutionaryComponent {
     this.showAlert(timeSpent);
     this.filesService.prepareFiles();
     this.doChart(this.lineChartData, ChartsService.signatures[0]);
-    this.doChart(this.chartService.lineChartDataSTD, ChartsService.signatures[1]);
-    this.doChart(this.chartService.lineChartDataMean, ChartsService.signatures[2]);
+    this.doChart(this.lineChartDataSTD, ChartsService.signatures[1]);
+    this.doChart(this.lineChartDataMean, ChartsService.signatures[2]);
   }
 
   public doChart(dataForChart, signature): void {

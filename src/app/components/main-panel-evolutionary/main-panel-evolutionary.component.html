@@ -46,7 +46,7 @@
   <small class="form-text text-muted">Maximization</small>
   <button type="submit" class="button-invisible" (click)="onSubmit()"><u>Confirm</u></button>
   <div class="chart-wrapper">
-    <canvas [hidden]="false" baseChart #myChart
+    <canvas [hidden]="true" baseChart #myChart
             height="1200" width="1600"
             [datasets]="lineChartData"
             [labels]="lineChartLabels"

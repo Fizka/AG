@@ -190,7 +190,6 @@ export class CrossingService {
         }
       }
     }
-    console.log(result);
     return result;
   }
 }

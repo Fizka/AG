@@ -82,13 +82,11 @@ export class MainPanelComponent {
 
     for (let i = 0; i < this.epochsAmount; i++) {
       // ewaluacja
-      console.log(this.population)
       let newPopulation: Subject[] = [];
       this.ewaluacja();
 
 
       bestSubjects = this.elitaryService.elitaryStrategy(this.population, this.maximization, this.ESamount);
-      console.log("SELECKJA")
       this.selekcja();
       // this.population = this.selectionService.performSelection(
       //   this.population, this.bestAndTournamentChro, this.maximization, this.selectionChoice);
@@ -101,24 +99,19 @@ export class MainPanelComponent {
       // }
 
        // mutacja
-      console.log("MUTATION")
       newPopulation = this.mutacja(newPopulation);
       // newPopulation.forEach(subject => {
       //   subject = this.mutationService.performMutation(subject, this.mutationProbability, this.mutationChoice);
       // });
 
       // inwersja
-      console.log("INVERSION")
       newPopulation = this.inwersja(newPopulation);
       // newPopulation.forEach(subject => {
       //   subject = this.inversionService.performInversion(subject, this.inversionProbability);
       // });
-      //console.log(newPopulation.forEach(p=>console.log(p.fitnessValue)))
 
       newPopulation = [...newPopulation, ...bestSubjects];
-      //console.log(newPopulation.forEach(p=>console.log(p.fitnessValue)))
 
-      console.log("ZAPIS")
       this.zapis(newPopulation);
       // newPopulation.forEach(subject => {
       //   subject = this.populationService.decodeSubject(subject);

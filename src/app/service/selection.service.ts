@@ -59,9 +59,9 @@ export class SelectionService {
   }
 
   public selectionRoulettess(population: Subject[], howMuch): Subject[] {
-    let sub = population;
+    const sub = population;
     const poolIndex = this.getPoolIndex(0, population.length - 1, SelectionService.getProcent(population.length, howMuch));
-    let gg = [];
+    const gg = [];
     for (let f = 0; f < poolIndex.length; f++) {
       gg.push(sub[poolIndex[f]]);
     }
@@ -84,43 +84,40 @@ export class SelectionService {
       mark.start = last;
       mark.stop = last + mark.mark;
       last += mark.mark;
-      if (mark != undefined) {
+      if (mark !== undefined) {
         gg.push(mark);
       }
     });
     if (howMuch <= 50) {
-      let rI = Math.random();
-      let val = gg.findIndex(p => p.start <= rI && p.stop > rI);
-      if (gg[val].sub !== undefined && val != undefined) {
-        score = Array.of(gg[val].sub);
+      const rI = Math.random();
+      const value = gg.findIndex(p => p.start <= rI && p.stop > rI);
+      if (gg[value].sub !== undefined && value !== undefined) {
+        score = Array.of(gg[value].sub);
       }
       while (score.length < SelectionService.getProcent(popLen, howMuch)) {
-        let randomIndex = Math.random();
-        let val = gg.findIndex(p => p.start <= randomIndex && p.stop > randomIndex);
-        console.log(val);
-        if (val != undefined) {
-          if (score.findIndex(d => gg[val].sub.x == d.x && gg[val].sub.y == d.y) == -1) {
-            if (gg[val].sub != undefined) {
+        const randomIndex = Math.random();
+        const val = gg.findIndex(p => p.start <= randomIndex && p.stop > randomIndex);
+        if (val !== undefined) {
+          if (score.findIndex(d => gg[val].sub.x === d.x && gg[val].sub.y === d.y) === -1) {
+            if (gg[val].sub !== undefined) {
               score.push(gg[val].sub);
             }
           }
         }
       }
-    }else{
-      while (sub.length != SelectionService.getProcent(popLen, howMuch)) {
-        let randomIndex = Math.random();
-        let val = gg.findIndex(p => p.start <= randomIndex && p.stop > randomIndex);
-        if (val != undefined) {
-          let popindex = sub.findIndex(d => gg[val].sub.x == d.x && gg[val].sub.y == d.y)
-          if (popindex != -1) {
-              sub.splice(popindex, 1)
+    } else {
+      while (sub.length !== SelectionService.getProcent(popLen, howMuch)) {
+        const randomIndex = Math.random();
+        const val = gg.findIndex(p => p.start <= randomIndex && p.stop > randomIndex);
+        if (val !== undefined) {
+          const popindex = sub.findIndex(d => gg[val].sub.x === d.x && gg[val].sub.y === d.y);
+          if (popindex !== -1) {
+            sub.splice(popindex, 1);
           }
         }
       }
     }
-    console.log(score.length);
     score.pop();
-    console.log(score.forEach((p, i) => console.log(p.fitnessValue + ' ' + i)));
     return howMuch > 50 ? sub : score;
   }
 
@@ -146,14 +143,14 @@ export class SelectionService {
       result.push(this.findBest(this.findSet(population, 0, presentNumber - 1), max));
     }
     for (let i = 1; i < numberOfSections; i++) {
-      let y = this.findSet(population, i * presentNumber, (i * presentNumber + presentNumber - 1));
-      if (y != undefined) {
+      const y = this.findSet(population, i * presentNumber, (i * presentNumber + presentNumber - 1));
+      if (y !== undefined) {
         result.push(this.findBest(y, max));
       }
     }
     if (l % numberOfSections !== 0) {
-      let d = this.findSet(population, l - (l % numberOfSections), l);
-      if (d != undefined) {
+      const d = this.findSet(population, l - (l % numberOfSections), l);
+      if (d !== undefined) {
         result.push(this.findBest(d, max));
       }
     }

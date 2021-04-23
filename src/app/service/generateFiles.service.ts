@@ -80,11 +80,11 @@ export class GenerateFilesService {
     });
     this.dynamicDownload({
       fileName: 'Mean values',
-      text: this.meanValues.toString()
+      text: this.meanValues.map(x => x.toString()).join('\n')
     });
     this.dynamicDownload({
       fileName: 'Std values',
-      text: this.stdValues.toString()
+      text: this.stdValues.map(x => x.toString()).join('\n')
     });
   }
 
