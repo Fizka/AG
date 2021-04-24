@@ -58,25 +58,17 @@ export class SelectionService {
     return sub;
   }
 
-  public selectionRoulettess(population: Subject[], howMuch): Subject[] {
-    const sub = population;
-    const poolIndex = this.getPoolIndex(0, population.length - 1, SelectionService.getProcent(population.length, howMuch));
-    const gg = [];
-    for (let f = 0; f < poolIndex.length; f++) {
-      gg.push(sub[poolIndex[f]]);
-    }
-    return gg;
-  }
-
-  public selectionRoulette(population: Subject[], howMuch, popLen): Subject[] {
-    const sub = population;
-    const gg: Mark[] = [];
-    let score: Subject[] = [];
+  private getSum(population: Subject[]): number {
     let sum = 0;
-    sub.forEach(p => {
+    population.forEach(p => {
       sum += p.fitnessValue;
     });
+    return sum;
+  }
+
+  private createMarks(population: Subject[], sum): Mark[] {
     let last = 0;
+    const marks: Mark[] = [];
     population.forEach(p => {
       const mark: Mark = new Mark();
       mark.mark = p.fitnessValue / sum;
@@ -84,53 +76,54 @@ export class SelectionService {
       mark.start = last;
       mark.stop = last + mark.mark;
       last += mark.mark;
-      if (mark !== undefined) {
-        gg.push(mark);
-      }
+      marks.push(mark);
     });
+    return marks;
+  }
+
+  private getCondition(marks: Mark[], randomIndex):number{
+    return marks.findIndex(p => p.start <= randomIndex && p.stop > randomIndex);
+  }
+
+  private getConditionPasses(population: Subject[], index, marks: Mark[]):number{
+    return population.findIndex(d => marks[index].sub.x === d.x && marks[index].sub.y === d.y)
+  }
+
+  public selectionRoulette(population: Subject[], howMuch, popLen): Subject[] {
+    const subjects = population;
+    let subjectsTemp: Subject[] = [];
+    let sumFunFitness = this.getSum(subjects);
+    let marks: Mark[] = this.createMarks(subjects, sumFunFitness);
+
     if (howMuch <= 50) {
-      const rI = Math.random();
-      const value = gg.findIndex(p => p.start <= rI && p.stop > rI);
-      if (gg[value].sub !== undefined && value !== undefined) {
-        score = Array.of(gg[value].sub);
+      const value = this.getCondition(marks, Math.random());
+      if (marks[value].sub !== undefined && value !== undefined) {
+        subjectsTemp = Array.of(marks[value].sub);
       }
-      while (score.length < SelectionService.getProcent(popLen, howMuch)) {
-        const randomIndex = Math.random();
-        const val = gg.findIndex(p => p.start <= randomIndex && p.stop > randomIndex);
+      while (subjectsTemp.length < SelectionService.getProcent(popLen, howMuch)) {
+        const val = this.getCondition(marks, Math.random());
         if (val !== undefined) {
-          if (score.findIndex(d => gg[val].sub.x === d.x && gg[val].sub.y === d.y) === -1) {
-            if (gg[val].sub !== undefined) {
-              score.push(gg[val].sub);
+          if (this.getConditionPasses(subjectsTemp, val, marks) === -1) {
+            if (marks[val].sub !== undefined) {
+              subjectsTemp.push(marks[val].sub);
             }
           }
         }
       }
+      subjectsTemp.pop();
     } else {
-      while (sub.length !== SelectionService.getProcent(popLen, howMuch)) {
+      while (subjects.length !== SelectionService.getProcent(popLen, howMuch)) {
         const randomIndex = Math.random();
-        const val = gg.findIndex(p => p.start <= randomIndex && p.stop > randomIndex);
+        const val = marks.findIndex(p => p.start <= randomIndex && p.stop > randomIndex);
         if (val !== undefined) {
-          const popindex = sub.findIndex(d => gg[val].sub.x === d.x && gg[val].sub.y === d.y);
+          const popindex = this.getConditionPasses(subjects, val, marks);
           if (popindex !== -1) {
-            sub.splice(popindex, 1);
+            subjects.splice(popindex, 1);
           }
         }
       }
     }
-    score.pop();
-    return howMuch > 50 ? sub : score;
-  }
-
-  private getPoolIndex(indexMin, indexMax, howMuch): number[] {
-    const poolIndex = [];
-    poolIndex.push(SelectionService.getRandom(indexMin, indexMax));
-    while (poolIndex.length < howMuch) {
-      const randomIndex = SelectionService.getRandom(indexMin, indexMax);
-      if (poolIndex.indexOf(randomIndex) === -1) {
-        poolIndex.push(randomIndex);
-      }
-    }
-    return poolIndex;
+    return howMuch > 50 ? subjects : subjectsTemp;
   }
 
   public selectionTournament(population: Subject[], numberOfSections, max): Subject[] {

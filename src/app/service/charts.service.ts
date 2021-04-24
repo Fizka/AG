@@ -20,16 +20,13 @@ export class ChartsService {
   constructor(private filesService: GenerateFilesService) {
   }
 
-
   labels(epoch): Label[] {
     const label: Label[] = [];
     let max = 1;
-    while (max !== epoch) {
-      const d = max - 1;
-      label.push(d.toString());
+    while (max !== epoch+1) {
+      label.push(max.toString());
       max++;
     }
-    label.push(epoch.toString());
     return label;
   }
 

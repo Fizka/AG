@@ -52,7 +52,7 @@ export class MainPanelEvolutionaryComponent {
   rangeStart = -10;
   rangeEnd = 10;
   populationAmount = 100;
-  epochsAmount = 1000;
+  epochsAmount = 100;
   bestAndTournamentChro = 40;
   ESamount = 10;
   crossProbability = 60;

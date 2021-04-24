@@ -45,7 +45,7 @@ export class MainPanelComponent {
   rangeEnd = 10;
   populationAmount = 100;
   numberOfBits = 20;
-  epochsAmount = 1000;
+  epochsAmount = 100;
   bestAndTournamentChro = 60;
   ESamount = 10;
   crossProbability = 60;
@@ -98,7 +98,7 @@ export class MainPanelComponent {
       //   newPopulation.push(child1, child2);
       // }
 
-       // mutacja
+      // mutacja
       newPopulation = this.mutacja(newPopulation);
       // newPopulation.forEach(subject => {
       //   subject = this.mutationService.performMutation(subject, this.mutationProbability, this.mutationChoice);

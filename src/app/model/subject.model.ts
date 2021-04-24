@@ -1,9 +1,9 @@
 export class Subject {
-	x: string;
-	y: string;
-	_x: number;
-	_y: number;
-	val: number;
+  x: string;
+  y: string;
+  _x: number;
+  _y: number;
+  val: number;
 
   setX(x: string, _x: number): void {
     this.x = x;
